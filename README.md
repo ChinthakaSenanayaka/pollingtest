@@ -33,10 +33,9 @@ clientService collection
             "notifyEmail": ["test@gmail.com"],
             "graceTime": 2, // in seconds & extra run if less than pollingFrequency and active from upStatus = false and can be updated to upStatus = true or email
             "graceTimeExpiration": 1, // in seconds & if upStatus = false, extra run will be executed and if no service then email
-            "outage": { // optional
-                "startTime": "", // UTC timezone
-                "endTime": "" // UTC timezone
-            }
+            "outage": [ // optional
+            		1
+            ]
         },
         {
             "callerId": 2,
@@ -45,10 +44,9 @@ clientService collection
             "notifyEmail": ["test@gmail.com"],
             "graceTime": 2,
             "graceTimeExpiration": 1,
-            "outage": {
-                "startTime": "",
-                "endTime": ""
-            }
+            "outage": [
+            		2
+            ]
         }
     ]
 }
@@ -67,6 +65,18 @@ caller collection
 	"callerName" : "firstName2 lastName2"
 }
 
+outage collection
+{
+	"_id": 1
+    "startTime": "", // UTC timezone
+    "endTime": ""
+}
+{
+	"_id": 2
+    "startTime": "",
+    "endTime": ""
+}
+
 Java: JDK-1.8_144
 MongoDB 3.4
 mongod --dbpath=/Users/tikka/Installs/mongodb-osx-x86_64-3.4.9/data/db --auth
@@ -82,4 +92,4 @@ db.clientService.createIndex( { '_id': 1, 'callers.callerId': 1 }, { unique: tru
 db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
 db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
 
-db.clientService.insert({"_id" : ObjectId("59eceb7080d63052a7491a83"),"serviceName" : "localServiceTest","host" : "localhost","port" : 8888,"upStatus" : true,"callerConfigs" : [{"callerId" : "59ecea6a80d63052a7491a81","pollingFrequency" : 5,"nextPoll" : 3,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1,"outage" : {"startTime" : ISODate("2017-10-22T06:00:00Z"),"endTime" : ISODate("2017-10-22T08:00:00Z")}},{"callerId" : "59ecea6b80d63052a7491a822","pollingFrequency" : 3,"nextPoll" : 2,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1}]});
+db.clientService.insert({"_id" : ObjectId("59eceb7080d63052a7491a83"),"serviceName" : "localServiceTest","host" : "localhost","port" : 8888,"upStatus" : true,"callerConfigs" : [{"callerId" : "59ecea6a80d63052a7491a81","pollingFrequency" : 5,"nextPoll" : 3,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1,"outage" : [{"startTime" : ISODate("2017-10-22T06:00:00Z"),"endTime" : ISODate("2017-10-22T08:00:00Z")}]},{"callerId" : "59ecea6b80d63052a7491a822","pollingFrequency" : 3,"nextPoll" : 2,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1}]});

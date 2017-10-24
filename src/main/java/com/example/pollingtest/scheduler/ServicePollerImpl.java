@@ -6,28 +6,18 @@ import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.example.pollingtest.repository.ClientServiceRepository;
-
 @Component
-@EnableScheduling
-public class ServicePollingScheduler {
+public class ServicePollerImpl implements ServicePoller {
 	
-	@Autowired
-	private ClientServiceRepository clientServiceRepository;
-	
-	@Scheduled(fixedDelayString = "${service.polling.scheduled.rate}")
-	public void pollServices() throws IOException {
+	public boolean pollServices(String host, int port) throws IOException {
 	    
 		Socket socket = null;
 		boolean isConnected = false;
 		
 		try {
-			socket = SocketFactory.getDefault().createSocket("localhost", 8888);
+			socket = SocketFactory.getDefault().createSocket(host, port);
 			isConnected = socket.isConnected();
 			System.out.println("CONNECTED: " + isConnected);
 		} catch (UnknownHostException e) {
@@ -39,6 +29,8 @@ public class ServicePollingScheduler {
 				socket.close();
 			}
 		}
+		
+		return isConnected;
 		
 	}
 	
