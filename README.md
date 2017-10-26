@@ -84,7 +84,8 @@ change application.properties configs
 
 db commands:
 
-use monitoring_db
+mongo 127.0.0.1:27017/monitoring_db
+
 db.caller.createIndex( { username: 1, password: 1 }, { unique: true } );
 db.clientService.createIndex( { host: 1, port: 1 }, { unique: true } );
 db.clientService.createIndex( { '_id': 1, 'callers.callerId': 1 }, { unique: true } );
@@ -96,3 +97,6 @@ db.outage.insert({ "_id" : ObjectId("59f19c3cd480fcf105edcd37"), "startTime" : I
 db.outage.insert({ "_id" : ObjectId("59f19c55d480fcf105edcd38"), "startTime" : ISODate("2017-11-22T06:00:00Z"), "endTime" : ISODate("2017-11-23T06:00:00Z") });
 
 db.clientService.insert({"_id" : ObjectId("59eceb7080d63052a7491a83"),"serviceName" : "localServiceTest","host" : "localhost","port" : 8888,"upStatus" : true,"callerConfigs" : [{"callerId" : "59ecea6a80d63052a7491a81","pollingFrequency" : 5,"nextPoll" : 3,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1,"outage" : ["59f19c3cd480fcf105edcd37", "59f19c55d480fcf105edcd38"]},{"callerId" : "59ecea6b80d63052a7491a822","pollingFrequency" : 3,"nextPoll" : 2,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1}]});
+
+run:
+java  -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
