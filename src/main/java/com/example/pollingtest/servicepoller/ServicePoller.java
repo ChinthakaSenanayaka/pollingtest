@@ -25,7 +25,7 @@ public class ServicePoller {
     @Autowired
     private ClientServiceRepository clientServiceRepository;
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServicePoller.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     
     @Scheduled(fixedDelayString = "${service.polling.scheduled.rate}")
     public void pollForServiceStatus() {

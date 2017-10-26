@@ -1,5 +1,7 @@
 package com.example.pollingtest.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +15,12 @@ import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.service.PollingService;
 
 @RestController
-public class PollingController extends AbstractController {
+public class PollingController {
 	
 	@Autowired
     private PollingService pollingService;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/saveService", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String saveService(@RequestBody ClientService clientService) {
