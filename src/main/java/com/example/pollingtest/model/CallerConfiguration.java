@@ -2,12 +2,9 @@ package com.example.pollingtest.model;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.Field;
-
 public class CallerConfiguration {
 	
-	@Field(value="callerId")
-	private Caller caller;
+	private String callerId;
 	
 	private Integer pollingFrequency;
 	
@@ -19,27 +16,27 @@ public class CallerConfiguration {
 	
 	private Integer graceTimeExpiration;
 	
-	private Outage outage;
+	private List<String> outages;
 
 	public CallerConfiguration() {}
 
-	public CallerConfiguration(Caller caller, Integer pollingFrequency, Integer nextPoll, List<String> notifyEmail,
-			Integer graceTime, Integer graceTimeExpiration, Outage outage) {
-		this.caller = caller;
+	public CallerConfiguration(String callerId, Integer pollingFrequency, Integer nextPoll, List<String> notifyEmail,
+			Integer graceTime, Integer graceTimeExpiration, List<String> outages) {
+		this.callerId = callerId;
 		this.pollingFrequency = pollingFrequency;
 		this.nextPoll = nextPoll;
 		this.notifyEmail = notifyEmail;
 		this.graceTime = graceTime;
 		this.graceTimeExpiration = graceTimeExpiration;
-		this.outage = outage;
+		this.outages = outages;
 	}
 
-	public Caller getCaller() {
-		return caller;
+	public String getCallerId() {
+		return callerId;
 	}
 
-	public void setCaller(Caller caller) {
-		this.caller = caller;
+	public void setCallerId(String callerId) {
+		this.callerId = callerId;
 	}
 
 	public Integer getPollingFrequency() {
@@ -81,13 +78,13 @@ public class CallerConfiguration {
 	public void setGraceTimeExpiration(Integer graceTimeExpiration) {
 		this.graceTimeExpiration = graceTimeExpiration;
 	}
-
-	public Outage getOutage() {
-		return outage;
-	}
-
-	public void setOutage(Outage outage) {
-		this.outage = outage;
-	}
+  
+    public List<String> getOutages() {
+      return outages;
+    }
+  
+    public void setOutages(List<String> outages) {
+      this.outages = outages;
+  }
 	
 }
