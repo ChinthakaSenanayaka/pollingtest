@@ -24,15 +24,18 @@ public class ClientService {
     
     private Boolean upStatus;
     
+    private Outage outage;
+    
     private List<CallerConfiguration> callerConfigs;
 
 	public ClientService() {}
 
-	public ClientService(String serviceName, String host, Integer port, Boolean upStatus, List<CallerConfiguration> callerConfigs) {
+	public ClientService(String serviceName, String host, Integer port, Boolean upStatus, Outage outage, List<CallerConfiguration> callerConfigs) {
 		this.serviceName = serviceName;
 		this.host = host;
 		this.port = port;
 		this.upStatus = upStatus;
+		this.outage = outage;
 		this.callerConfigs = callerConfigs;
 	}
 
@@ -74,6 +77,14 @@ public class ClientService {
 
 	public void setUpStatus(Boolean upStatus) {
 		this.upStatus = upStatus;
+	}
+
+	public Outage getOutage() {
+		return outage;
+	}
+
+	public void setOutage(Outage outage) {
+		this.outage = outage;
 	}
 
 	public List<CallerConfiguration> getCallerConfigs() {

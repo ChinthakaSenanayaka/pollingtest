@@ -8,16 +8,12 @@ import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.repository.CallerRepository;
 import com.example.pollingtest.repository.ClientServiceRepository;
-import com.example.pollingtest.repository.OutageRepository;
 
 @Service
 public class PollingServiceImpl implements PollingService {
 	
 	@Autowired
 	private CallerRepository callerRepository;
-	
-	@Autowired
-    private OutageRepository outageRepository;
 	
 	@Autowired
     private ClientServiceRepository clientServiceRepository;
@@ -39,11 +35,11 @@ public class PollingServiceImpl implements PollingService {
     }
     
     public Outage saveOutage(Outage outage) {
-        return outageRepository.save(outage);
+        return null; //outageRepository.save(outage);
     }
     
     public void deleteOutage(Outage outage) {
-      outageRepository.delete(outage);
+      //outageRepository.delete(outage);
     }
 	
 }

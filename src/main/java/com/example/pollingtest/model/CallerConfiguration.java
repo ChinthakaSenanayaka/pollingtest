@@ -16,19 +16,16 @@ public class CallerConfiguration {
 	
 	private Integer graceTimeExpiration;
 	
-	private List<String> outages;
-
 	public CallerConfiguration() {}
 
 	public CallerConfiguration(String callerId, Integer pollingFrequency, Integer nextPoll, List<String> notifyEmail,
-			Integer graceTime, Integer graceTimeExpiration, List<String> outages) {
+			Integer graceTime, Integer graceTimeExpiration) {
 		this.callerId = callerId;
 		this.pollingFrequency = pollingFrequency;
 		this.nextPoll = nextPoll;
 		this.notifyEmail = notifyEmail;
 		this.graceTime = graceTime;
 		this.graceTimeExpiration = graceTimeExpiration;
-		this.outages = outages;
 	}
 
 	public String getCallerId() {
@@ -78,13 +75,5 @@ public class CallerConfiguration {
 	public void setGraceTimeExpiration(Integer graceTimeExpiration) {
 		this.graceTimeExpiration = graceTimeExpiration;
 	}
-  
-    public List<String> getOutages() {
-      return outages;
-    }
-  
-    public void setOutages(List<String> outages) {
-      this.outages = outages;
-  }
 	
 }
