@@ -10,22 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.pollingtest.model.Caller;
 import com.example.pollingtest.model.ClientService;
-import com.example.pollingtest.repository.CallerRepository;
-import com.example.pollingtest.repository.ClientServiceRepository;
+import com.example.pollingtest.service.PollingService;
 
 @RestController
 public class PollingController extends AbstractController {
-
-	@Autowired
-	private CallerRepository callerRepository;
 	
 	@Autowired
-	private ClientServiceRepository clientServiceRepository;
+    private PollingService pollingService;
 
 	@RequestMapping(value = "/saveService", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String saveService(@RequestBody ClientService clientService) {
 		
-		ClientService dbClientService = clientServiceRepository.save(clientService);
+		ClientService dbClientService = pollingService.saveClientService(clientService);
 		
 		return dbClientService.getId();
 	}
@@ -34,7 +30,7 @@ public class PollingController extends AbstractController {
 	@ResponseBody
 	public String saveCaller(@RequestBody Caller caller) {
 		
-		Caller dbCaller = callerRepository.save(caller);
+		Caller dbCaller = pollingService.saveCaller(caller);
 		
 		return dbCaller.getId();
 	}
@@ -42,7 +38,7 @@ public class PollingController extends AbstractController {
 	@RequestMapping(value = "/deleteService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteService(@RequestBody ClientService clientService) {
 		
-		clientServiceRepository.delete(clientService);
+	    pollingService.deleteClientService(clientService);
 		
 		return "Service is deleted";
 	}
@@ -51,7 +47,7 @@ public class PollingController extends AbstractController {
 	@ResponseBody
 	public String deleteCaller(@RequestBody Caller caller) {
 		
-		callerRepository.delete(caller);
+	    pollingService.deleteCaller(caller);
 		
 		return "Caller is deleted";
 	}

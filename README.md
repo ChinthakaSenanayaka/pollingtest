@@ -68,13 +68,13 @@ caller collection
 outage collection
 {
 	"_id": 1
-    "startTime": "", // UTC timezone
-    "endTime": ""
+    "startTime": ISODate("2017-10-22T06:00:00Z"), // UTC timezone
+    "endTime": ISODate(2017-10-23T06:00:00Z")
 }
 {
 	"_id": 2
-    "startTime": "",
-    "endTime": ""
+    "startTime": ISODate("2017-11-22T06:00:00Z"),
+    "endTime": ISODate("2017-11-23T06:00:00Z")
 }
 
 Java: JDK-1.8_144
@@ -92,4 +92,7 @@ db.clientService.createIndex( { '_id': 1, 'callers.callerId': 1 }, { unique: tru
 db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
 db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
 
-db.clientService.insert({"_id" : ObjectId("59eceb7080d63052a7491a83"),"serviceName" : "localServiceTest","host" : "localhost","port" : 8888,"upStatus" : true,"callerConfigs" : [{"callerId" : "59ecea6a80d63052a7491a81","pollingFrequency" : 5,"nextPoll" : 3,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1,"outage" : [{"startTime" : ISODate("2017-10-22T06:00:00Z"),"endTime" : ISODate("2017-10-22T08:00:00Z")}]},{"callerId" : "59ecea6b80d63052a7491a822","pollingFrequency" : 3,"nextPoll" : 2,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1}]});
+db.outage.insert({ "_id" : ObjectId("59f19c3cd480fcf105edcd37"), "startTime" : ISODate("2017-10-22T06:00:00Z"), "endTime" : ISODate("2017-10-23T06:00:00Z") });
+db.outage.insert({ "_id" : ObjectId("59f19c55d480fcf105edcd38"), "startTime" : ISODate("2017-11-22T06:00:00Z"), "endTime" : ISODate("2017-11-23T06:00:00Z") });
+
+db.clientService.insert({"_id" : ObjectId("59eceb7080d63052a7491a83"),"serviceName" : "localServiceTest","host" : "localhost","port" : 8888,"upStatus" : true,"callerConfigs" : [{"callerId" : "59ecea6a80d63052a7491a81","pollingFrequency" : 5,"nextPoll" : 3,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1,"outage" : ["59f19c3cd480fcf105edcd37", "59f19c55d480fcf105edcd38"]},{"callerId" : "59ecea6b80d63052a7491a822","pollingFrequency" : 3,"nextPoll" : 2,"notifyEmail" : ["senanayakachinthaka@gmail.com"],"graceTime" : 2,"graceTimeExpiration" : 1}]});
