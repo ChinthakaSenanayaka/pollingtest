@@ -85,3 +85,10 @@ db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName
 
 run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
+
+TODO:
+1. Add controller use business logic
+2. Change to appropriate class structure
+2. Exception handling
+4. Unit testing
+5. Fix readme file
