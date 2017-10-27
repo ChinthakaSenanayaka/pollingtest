@@ -65,6 +65,7 @@ caller collection
 
 Java: JDK-1.8_144
 MongoDB 3.4
+No security concerns are addressed such as db user/pass, app authentication and authorization
 mongod --dbpath=/Users/tikka/Installs/mongodb-osx-x86_64-3.4.9/data/db --auth
 change application.properties configs
 
@@ -87,8 +88,7 @@ run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
 
 TODO:
-1. Add controller use business logic
-2. Change to appropriate class structure
-2. Exception handling
-4. Unit testing
-5. Fix readme file
+1. Dev testing
+2. Code comments: class level, method level and interfaces
+3. Unit testing
+4. Fix readme file with contracts

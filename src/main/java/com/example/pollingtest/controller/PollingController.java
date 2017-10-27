@@ -1,5 +1,7 @@
 package com.example.pollingtest.controller;
 
+import javax.websocket.server.PathParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.pollingtest.dto.CallerConfigDTO;
+import com.example.pollingtest.exceptions.BadRequestException;
+import com.example.pollingtest.exceptions.NotFoundException;
 import com.example.pollingtest.model.Caller;
+import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.service.PollingService;
@@ -42,11 +49,11 @@ public class PollingController {
 		return new ResponseEntity<Caller>(dbCaller, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value = "/saveOutage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/setupOutage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<Outage> saveOutage(@RequestBody Outage outage) {
+	public ResponseEntity<Outage> setupOutage(@PathParam("host") String host, @PathParam("port") Integer port, @RequestBody Outage outage) throws BadRequestException {
 		
-		Outage dbOutage = pollingService.saveOutage(outage);
+		Outage dbOutage = pollingService.setupOutage(host, port, outage);
 		
 		return new ResponseEntity<Outage>(dbOutage, HttpStatus.CREATED);
 	}
@@ -69,13 +76,24 @@ public class PollingController {
 	    return new ResponseEntity<String>("Caller is deleted", HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(value = "/deleteOutage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/deleteOutage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteOutage(@RequestBody Outage outage) {
+	public ResponseEntity<String> deleteOutage(@PathParam("host") String host, @PathParam("port") Integer port) {
 		
-	    pollingService.deleteOutage(outage);
+	    pollingService.deleteOutage(host, port);
 		
 	    return new ResponseEntity<String>("Outage is deleted", HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(value = "/host/{host}/port/{port}/setupCallerService", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<CallerConfiguration> setupCallerService(@PathParam("host") String host, @PathParam("port") Integer port, @RequestBody CallerConfigDTO callerConfigDTO, 
+			@RequestParam(value = "append", defaultValue = "false", required = false) String append) throws NotFoundException, BadRequestException {
+		
+		boolean appendCallerConfig = Boolean.getBoolean(append);
+		CallerConfiguration dbCallerConfiguration = pollingService.setupCallerService(host, port, callerConfigDTO, appendCallerConfig);
+		
+		return new ResponseEntity<CallerConfiguration>(dbCallerConfiguration, HttpStatus.CREATED);
 	}
 
 }
