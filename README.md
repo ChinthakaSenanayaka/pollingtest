@@ -96,4 +96,4 @@ TODO:
 Assumptions:
 1. Developing a UI is not in the requirements, thus only fully functional API is developed.
 2. No security aspects of this application are addressed.
-3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns within given deadline.
+3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns (such as perf concerns) within given deadline.
