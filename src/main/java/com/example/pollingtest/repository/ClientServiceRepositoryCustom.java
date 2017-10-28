@@ -11,4 +11,8 @@ public interface ClientServiceRepositoryCustom {
 	
 	CallerConfiguration setupCallerService(String host, Integer port, CallerConfiguration callerConfiguration, boolean append);
 	
+	void deleteClientService(String host, Integer port);
+	
+	void removeCallerRefs(String callerId);
+	
 }

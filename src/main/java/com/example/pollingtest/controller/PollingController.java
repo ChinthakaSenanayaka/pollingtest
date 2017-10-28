@@ -1,13 +1,12 @@
 package com.example.pollingtest.controller;
 
-import javax.websocket.server.PathParam;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,25 +50,25 @@ public class PollingController {
 	
 	@RequestMapping(value = "/host/{host}/port/{port}/setupOutage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<Outage> setupOutage(@PathParam("host") String host, @PathParam("port") Integer port, @RequestBody Outage outage) throws BadRequestException {
+	public ResponseEntity<Outage> setupOutage(@PathVariable("host") String host, @PathVariable("port") Integer port, @RequestBody Outage outage) throws BadRequestException {
 		
 		Outage dbOutage = pollingService.setupOutage(host, port, outage);
 		
 		return new ResponseEntity<Outage>(dbOutage, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value = "/deleteService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/deleteService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteService(@RequestBody ClientService clientService) {
+	public ResponseEntity<String> deleteService(@PathVariable("host") String host, @PathVariable("port") Integer port) {
 		
-	    pollingService.deleteClientService(clientService);
+	    pollingService.deleteClientService(host, port);
 		
 	    return new ResponseEntity<String>("Service is deleted", HttpStatus.NO_CONTENT);
 	}
 	
 	@RequestMapping(value = "/deleteCaller", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteCaller(@RequestBody Caller caller) {
+	public ResponseEntity<String> deleteCaller(@RequestBody Caller caller) throws NotFoundException {
 		
 	    pollingService.deleteCaller(caller);
 		
@@ -78,7 +77,7 @@ public class PollingController {
 	
 	@RequestMapping(value = "/host/{host}/port/{port}/deleteOutage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteOutage(@PathParam("host") String host, @PathParam("port") Integer port) {
+	public ResponseEntity<String> deleteOutage(@PathVariable("host") String host, @PathVariable("port") Integer port) {
 		
 	    pollingService.deleteOutage(host, port);
 		
@@ -87,7 +86,7 @@ public class PollingController {
 	
 	@RequestMapping(value = "/host/{host}/port/{port}/setupCallerService", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<CallerConfiguration> setupCallerService(@PathParam("host") String host, @PathParam("port") Integer port, @RequestBody CallerConfigDTO callerConfigDTO, 
+	public ResponseEntity<CallerConfiguration> setupCallerService(@PathVariable("host") String host, @PathVariable("port") Integer port, @RequestBody CallerConfigDTO callerConfigDTO, 
 			@RequestParam(value = "append", defaultValue = "false", required = false) String append) throws NotFoundException, BadRequestException {
 		
 		boolean appendCallerConfig = Boolean.getBoolean(append);

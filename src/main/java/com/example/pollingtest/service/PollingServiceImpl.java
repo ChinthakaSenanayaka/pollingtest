@@ -26,16 +26,22 @@ public class PollingServiceImpl implements PollingService {
         return clientServiceRepository.save(clientService);
     }
     
-    public void deleteClientService(ClientService clientService) {
-        clientServiceRepository.delete(clientService);
+    public void deleteClientService(String host, Integer port) {
+        clientServiceRepository.deleteClientService(host, port);
     }
     
     public Caller saveCaller(Caller caller) {
         return callerRepository.save(caller);
     }
     
-    public void deleteCaller(Caller caller) {
-        callerRepository.delete(caller);
+    public void deleteCaller(Caller caller) throws NotFoundException {
+    		
+    		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
+    		if(dbCaller == null) {
+    			throw new NotFoundException("Caller with username and password not found!");
+    		}
+    		clientServiceRepository.removeCallerRefs(dbCaller.getId());
+        callerRepository.delete(dbCaller);
     }
     
     public Outage setupOutage(String host, Integer port, Outage outage) throws BadRequestException {

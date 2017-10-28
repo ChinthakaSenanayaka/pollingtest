@@ -41,7 +41,7 @@ public class ServicePoller {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	@Scheduled(fixedDelayString = "${service.polling.scheduled.rate}")
+	@Scheduled(fixedDelayString = "${com.example.pollingtest.poll.rate}")
 	public void pollForServiceStatus() {
 
 		List<ClientService> clientServiceList = clientServiceRepository.findAll();
@@ -143,7 +143,7 @@ public class ServicePoller {
 	        message.setTo(toEmailAddress); 
 	        message.setSubject(emailSubject); 
 	        message.setText(String.format(emailText, host, port));
-	        emailSender.send(message);
+	        //emailSender.send(message);
 	        isEmailSent = true;
 			
 		} catch(MailException mailException) {

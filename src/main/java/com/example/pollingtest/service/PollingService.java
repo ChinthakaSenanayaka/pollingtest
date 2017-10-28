@@ -12,11 +12,11 @@ public interface PollingService {
 	
     ClientService saveClientService(ClientService clientService);
 
-    void deleteClientService(ClientService clientService);
+    void deleteClientService(String host, Integer port);
 
     Caller saveCaller(Caller caller);
 
-    void deleteCaller(Caller caller);
+    void deleteCaller(Caller caller) throws NotFoundException;
 
     Outage setupOutage(String host, Integer port, Outage outage) throws BadRequestException;
 

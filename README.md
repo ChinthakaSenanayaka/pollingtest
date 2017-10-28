@@ -80,9 +80,9 @@ db.clientService.createIndex( { '_id': 1, 'callers.callerId': 1 }, { unique: tru
 db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
 db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
 
-db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a83"),"serviceName":"localServiceTest","host":"localhost","port":8888,"upStatus":true,"outage": {"startTime": ISODate("2017-10-22T06:00:00Z"),"endTime": ISODate("2017-10-23T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a822","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
+db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a83"),"serviceName":"localServiceTest","host":"localhost","port":8888,"upStatus":true,"outage": {"startTime": ISODate("2017-10-22T06:00:00Z"),"endTime": ISODate("2017-10-23T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
 
-db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName":"localServiceTest","host":"localhost","port":8889,"upStatus":true,"outage": {"startTime": ISODate("2017-10-27T06:00:00Z"),"endTime": ISODate("2017-10-28T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a822","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
+db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName":"localServiceTest","host":"localhost","port":8889,"upStatus":true,"outage": {"startTime": ISODate("2017-10-27T06:00:00Z"),"endTime": ISODate("2017-10-28T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
 
 run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
@@ -92,3 +92,8 @@ TODO:
 2. Code comments: class level, method level and interfaces
 3. Unit testing
 4. Fix readme file with contracts
+
+Assumptions:
+1. Developing a UI is not in the requirements, thus only fully functional API is developed.
+2. No security aspects of this application are addressed.
+3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns within given deadline.

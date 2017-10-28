@@ -10,6 +10,7 @@ import com.example.pollingtest.constants.ClientServiceConstants;
 import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
+import com.mongodb.BasicDBObject;
 
 public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCustom {
 	
@@ -82,6 +83,33 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		
 		return dbCallerConfiguration;
 		
+	}
+	
+	public void deleteClientService(String host, Integer port) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
+				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
+		mongoTemplate.remove(query, ClientService.class);
+	}
+	
+	public void removeCallerRefs(String callerId) {
+		
+		for(ClientService dbClientService : mongoTemplate.findAll(ClientService.class)) {
+			for(CallerConfiguration dbCallerConfig : dbClientService.getCallerConfigs()) {
+				if(callerId.equals(dbCallerConfig.getCallerId())) {
+					
+					Query query = new Query();
+					query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(dbClientService.getHost()).
+							andOperator(Criteria.where(ClientServiceConstants.PORT).is(dbClientService.getPort())));
+					
+					Update update = new Update();
+					update.pull(ClientServiceConstants.CALLER_CONFIGS,  new BasicDBObject(ClientServiceConstants.CALLER_CONFIGS_CALLER_ID, callerId));
+					
+					mongoTemplate.findAndModify(query, update, ClientService.class);
+					break;
+				}
+			}
+		}
 	}
 	
 }
