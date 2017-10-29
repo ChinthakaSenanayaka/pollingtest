@@ -107,7 +107,7 @@ public class ServicePollerAsync {
 		try {
 			socket = SocketFactory.getDefault().createSocket(host, port);
 			isConnected = socket.isConnected();
-			LOGGER.info("CONNECTED: " + isConnected);
+			LOGGER.info(host + ":" + port + " CONNECTED: " + isConnected);
 		} catch (UnknownHostException e) {
 			LOGGER.warn("ERROR unknown host: " + e);
 		} catch (IOException e) {
