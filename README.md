@@ -65,6 +65,7 @@ caller collection
 
 Java: JDK-1.8_144
 MongoDB 3.4
+Maven 3.0.3
 No security concerns are addressed such as db user/pass, app authentication and authorization
 mongod --dbpath=/Users/tikka/Installs/mongodb-osx-x86_64-3.4.9/data/db --auth
 change application.properties configs
@@ -75,7 +76,7 @@ mongo 127.0.0.1:27017/monitoring_db
 
 db.caller.createIndex( { username: 1, password: 1 }, { unique: true } );
 db.clientService.createIndex( { host: 1, port: 1 }, { unique: true } );
-db.clientService.createIndex( { '_id': 1, 'callers.callerId': 1 }, { unique: true } );
+db.clientService.createIndex( { host: 1, port: 1, 'callerConfigs.callerId': 1 }, { unique: true } );
 
 db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
 db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
@@ -83,6 +84,9 @@ db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "use
 db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a83"),"serviceName":"localServiceTest","host":"localhost","port":8888,"upStatus":true,"outage": {"startTime": ISODate("2017-10-22T06:00:00Z"),"endTime": ISODate("2017-10-23T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
 
 db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName":"localServiceTest","host":"localhost","port":8889,"upStatus":true,"outage": {"startTime": ISODate("2017-10-27T06:00:00Z"),"endTime": ISODate("2017-10-28T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
+
+build:
+mvn clean install
 
 run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar

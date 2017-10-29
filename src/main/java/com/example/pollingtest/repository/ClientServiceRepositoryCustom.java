@@ -1,5 +1,6 @@
 package com.example.pollingtest.repository;
 
+import com.example.pollingtest.exceptions.NotFoundException;
 import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.Outage;
 
@@ -11,7 +12,7 @@ public interface ClientServiceRepositoryCustom {
 	
 	CallerConfiguration setupCallerService(String host, Integer port, CallerConfiguration callerConfiguration, boolean append);
 	
-	void deleteClientService(String host, Integer port);
+	void deleteClientService(String host, Integer port) throws NotFoundException;
 	
 	void removeCallerRefs(String callerId);
 	

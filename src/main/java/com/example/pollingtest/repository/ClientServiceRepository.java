@@ -7,7 +7,7 @@ import com.example.pollingtest.model.ClientService;
 
 public interface ClientServiceRepository extends MongoRepository<ClientService, Long>, ClientServiceRepositoryCustom {
 	
-	@Query("{host: '?0', port: '?1'}")
+	@Query("{host: '?0', port: ?1}")
 	ClientService findByHostAndPort(String host, Integer port);
 	
 }

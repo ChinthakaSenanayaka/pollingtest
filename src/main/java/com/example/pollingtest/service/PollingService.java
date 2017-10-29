@@ -10,9 +10,9 @@ import com.example.pollingtest.model.Outage;
 
 public interface PollingService {
 	
-    ClientService saveClientService(ClientService clientService);
+    ClientService saveClientService(ClientService clientService) throws BadRequestException;
 
-    void deleteClientService(String host, Integer port);
+    void deleteClientService(String host, Integer port) throws NotFoundException;
 
     Caller saveCaller(Caller caller);
 

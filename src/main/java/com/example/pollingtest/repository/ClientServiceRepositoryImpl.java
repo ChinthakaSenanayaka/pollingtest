@@ -1,5 +1,9 @@
 package com.example.pollingtest.repository;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -7,15 +11,19 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.example.pollingtest.constants.ClientServiceConstants;
+import com.example.pollingtest.exceptions.NotFoundException;
 import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.mongodb.BasicDBObject;
+import com.mongodb.WriteResult;
 
 public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCustom {
 	
 	@Autowired
     MongoTemplate mongoTemplate;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
 	public Outage setupOutage(String host, Integer port, Outage outage) {
 		
@@ -48,48 +56,57 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 	public CallerConfiguration setupCallerService(String host, Integer port, CallerConfiguration callerConfiguration, boolean append) {
 		
 		Query query = new Query();
-		Update update = new Update();
+		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
+				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
 		
-		if(append) {
-			query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
-					andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)).
-					andOperator(Criteria.where(ClientServiceConstants.CALLER_CONFIGS_CALLER_ID).is(callerConfiguration.getCallerId())));
+		ClientService dbClientService = mongoTemplate.findOne(query, ClientService.class);
+		List<CallerConfiguration> dbCallerConfigs = dbClientService.getCallerConfigs();
+		boolean foundCallerConfig = false;
+		CallerConfiguration returnDbCallerConfig = null;
+		for(int callerConifgCounter = 0; callerConifgCounter < dbClientService.getCallerConfigs().size(); callerConifgCounter++) {
 			
-			if(callerConfiguration.getPollingFrequency() != null) {
-				update.set(ClientServiceConstants.CALLER_CONFIGS_$_POLL_FREQUENCY, callerConfiguration.getPollingFrequency());
-			}
-			if(callerConfiguration.getNotifyEmail() != null) {
-				update.set(ClientServiceConstants.CALLER_CONFIGS_$_NOTIFY_EMAIL, callerConfiguration.getNotifyEmail());
-			}
-			if(callerConfiguration.getGraceTime() != null) {
-				update.set(ClientServiceConstants.CALLER_CONFIGS_$_GRACE_TIME, callerConfiguration.getGraceTime());
-			}
-			
-		} else {
-			query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
-					andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
-			
-			update.addToSet(ClientServiceConstants.CALLER_CONFIGS_CALLER_ID, callerConfiguration);
-		}
-		ClientService clientService = mongoTemplate.findAndModify(query, update, ClientService.class);
-		
-		CallerConfiguration dbCallerConfiguration = null;
-		for(CallerConfiguration dbInternalCallerConfiguration : clientService.getCallerConfigs()) {
-			if(dbInternalCallerConfiguration.getCallerId().equals(callerConfiguration.getCallerId())) {
-				dbCallerConfiguration = dbInternalCallerConfiguration;
+			CallerConfiguration dbCallerConfig = dbCallerConfigs.get(callerConifgCounter);
+			if(dbCallerConfig.getCallerId().equals(callerConfiguration.getCallerId())) {
+				foundCallerConfig = true;
+				
+				if(append) {
+					if(callerConfiguration.getPollingFrequency() != null) {
+						dbCallerConfig.setPollingFrequency(callerConfiguration.getPollingFrequency());
+					}
+					if(callerConfiguration.getNotifyEmail() != null) {
+						dbCallerConfig.setNotifyEmail(callerConfiguration.getNotifyEmail());
+					}
+					if(callerConfiguration.getGraceTime() != null) {
+						dbCallerConfig.setGraceTime(callerConfiguration.getGraceTime());
+					}
+					returnDbCallerConfig = dbCallerConfig;
+				} else {
+					dbCallerConfigs.remove(callerConifgCounter);
+					dbCallerConfigs.add(callerConifgCounter, callerConfiguration);
+					returnDbCallerConfig = callerConfiguration;
+				}
 				break;
+				
 			}
 		}
+		if(!foundCallerConfig) {
+			dbClientService.getCallerConfigs().add(callerConfiguration);
+			returnDbCallerConfig = callerConfiguration;
+		}
+		mongoTemplate.save(dbClientService);
 		
-		return dbCallerConfiguration;
+		return returnDbCallerConfig;
 		
 	}
 	
-	public void deleteClientService(String host, Integer port) {
+	public void deleteClientService(String host, Integer port) throws NotFoundException {
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
 				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
-		mongoTemplate.remove(query, ClientService.class);
+		WriteResult dbWriteResult = mongoTemplate.remove(query, ClientService.class);
+		if(dbWriteResult.getN() == 0) {
+			throw new NotFoundException("Specified client service not found!");
+		}
 	}
 	
 	public void removeCallerRefs(String callerId) {
@@ -103,7 +120,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 							andOperator(Criteria.where(ClientServiceConstants.PORT).is(dbClientService.getPort())));
 					
 					Update update = new Update();
-					update.pull(ClientServiceConstants.CALLER_CONFIGS,  new BasicDBObject(ClientServiceConstants.CALLER_ID, callerId));
+					update.pull(ClientServiceConstants.CALLER_CONFIGS, new BasicDBObject(ClientServiceConstants.CALLER_ID, callerId));
 					
 					mongoTemplate.updateFirst(query, update, ClientService.class);
 					break;

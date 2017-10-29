@@ -1,8 +1,14 @@
 package com.example.pollingtest.service;
 
+import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.example.pollingtest.constants.ClientServiceConstants;
 import com.example.pollingtest.dto.CallerConfigDTO;
 import com.example.pollingtest.exceptions.BadRequestException;
 import com.example.pollingtest.exceptions.NotFoundException;
@@ -12,6 +18,7 @@ import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.repository.CallerRepository;
 import com.example.pollingtest.repository.ClientServiceRepository;
+import com.example.pollingtest.util.Validator;
 
 @Service
 public class PollingServiceImpl implements PollingService {
@@ -22,11 +29,33 @@ public class PollingServiceImpl implements PollingService {
 	@Autowired
     private ClientServiceRepository clientServiceRepository;
 	
-    public ClientService saveClientService(ClientService clientService) {
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
+    public ClientService saveClientService(ClientService clientService) throws BadRequestException {
+    		
+    		if(StringUtils.isEmpty(clientService.getServiceName())) {
+    			clientService.setServiceName(ClientServiceConstants.CLIENT_SERVICE_NAME);
+    		}
+    		clientService.setUpStatus(true);
+    		if(clientService.getOutage() != null) {
+        		Validator.validateOutage(clientService.getOutage().getStartTime(), clientService.getOutage().getEndTime());
+    		}
+    		
+    		if(clientService.getCallerConfigs() == null) {
+    			clientService.setCallerConfigs(new ArrayList<CallerConfiguration>());
+    		}
+    		for(CallerConfiguration callerConfig : clientService.getCallerConfigs()) {
+    			callerConfig.setNextPoll(callerConfig.getPollingFrequency());
+    			callerConfig.setGraceTimeExpiration(callerConfig.getGraceTime());
+    			if(callerConfig.getNotifyEmail() == null) {
+    				callerConfig.setNotifyEmail(new ArrayList<String>());
+    			}
+    		}
+    		
         return clientServiceRepository.save(clientService);
     }
     
-    public void deleteClientService(String host, Integer port) {
+    public void deleteClientService(String host, Integer port) throws NotFoundException {
         clientServiceRepository.deleteClientService(host, port);
     }
     
@@ -47,9 +76,7 @@ public class PollingServiceImpl implements PollingService {
     public Outage setupOutage(String host, Integer port, Outage outage) throws BadRequestException {
     		
     		// validation
-    		if(outage.getStartTime().after(outage.getEndTime())) {
-    			throw new BadRequestException("Outage start time should be earlier than outage end time!");
-    		}
+    		Validator.validateOutage(outage.getStartTime(), outage.getEndTime());
     		
         return clientServiceRepository.setupOutage(host, port, outage);
     }
@@ -63,30 +90,36 @@ public class PollingServiceImpl implements PollingService {
     		
     		Caller caller = callerConfigDTO.getCaller();
     		CallerConfiguration callerConfiguration = callerConfigDTO.getCallerConfiguration();
-    		
-    		// validation
-    		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
-    		if(dbCaller == null) {
-    			throw new NotFoundException("Caller does not exist!");
-    		}
-    		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
-    		if(dbClientService == null) {
-    			throw new NotFoundException("Service monitoring is not set up!");
-    		}
-    		if(callerConfiguration.getNotifyEmail() == null || callerConfiguration.getNotifyEmail().size() == 0) {
-    			throw new BadRequestException("At least single email address should be added.");
-    		}
-    		if(callerConfiguration.getPollingFrequency() < 1) {
-    			throw new BadRequestException("Service polling frequency should be higher than 1 second!");
-    		}
-    		if(callerConfiguration.getGraceTime() < 1) {
-    			throw new BadRequestException("Service fail notifying grace time should be higher than 1 second!");
-    		}
-    		
-    		callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
-    		callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
-    		
-    		return clientServiceRepository.setupCallerService(host, port, callerConfiguration, append);
+
+		// validation
+		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
+		if (dbCaller == null) {
+			throw new NotFoundException("Caller does not exist!");
+		}
+		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
+		if (dbClientService == null) {
+			throw new NotFoundException("Service monitoring is not set up!");
+		}
+		if (!append) {
+			if (callerConfiguration.getNotifyEmail() == null || callerConfiguration.getNotifyEmail().size() == 0) {
+				throw new BadRequestException("At least single email address should be added.");
+			}
+			if (callerConfiguration.getPollingFrequency() == null || callerConfiguration.getPollingFrequency() < 1) {
+				throw new BadRequestException("Service polling frequency should be higher than 1 second!");
+			}
+			if (callerConfiguration.getGraceTime() == null || callerConfiguration.getGraceTime() < 1) {
+				throw new BadRequestException("Service fail notifying grace time should be higher than 1 second!");
+			}
+		} else if(callerConfiguration.getNotifyEmail() == null && (callerConfiguration.getPollingFrequency() == null || callerConfiguration.getPollingFrequency() < 1) && 
+				(callerConfiguration.getGraceTime() == null || callerConfiguration.getGraceTime() < 1)) {
+			throw new BadRequestException("Service setup failed, notify email, polling frequency and grace time fields are mandatory!");
+		}
+
+		callerConfiguration.setCallerId(dbCaller.getId());
+		callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
+		callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
+
+		return clientServiceRepository.setupCallerService(host, port, callerConfiguration, append);
     		
     }
 	

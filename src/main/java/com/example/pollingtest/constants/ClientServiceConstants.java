@@ -2,6 +2,8 @@ package com.example.pollingtest.constants;
 
 public interface ClientServiceConstants {
 	
+	public static final String CLIENT_SERVICE_NAME = "ClientService";
+	
 	public static final String HOST = "host";
 	
 	public static final String PORT = "port";
