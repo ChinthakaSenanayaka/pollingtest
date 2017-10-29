@@ -92,7 +92,7 @@ run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
 
 TODO:
-1. async polling, Unit testing
+1. Unit testing
 2. Code comments: class level, method level and interfaces
 3. Fix readme file with contracts
 
