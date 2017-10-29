@@ -86,5 +86,12 @@ public class PollingController extends AbstractController {
 		
 		return new ResponseEntity<CallerConfiguration>(dbCallerConfiguration, HttpStatus.CREATED);
 	}
+	
+	@RequestMapping(value = "/host/{host}/port/{port}/callerService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeCallerService(@PathVariable("host") String host, @PathVariable("port") Integer port, @RequestBody Caller caller) throws NotFoundException {
+		
+		pollingService.removeCallerService(host, port, caller);
+	}
 
 }

@@ -24,5 +24,7 @@ public interface PollingService {
     
     CallerConfiguration setupCallerService(String host, Integer port, CallerConfigDTO callerConfigDTO, boolean append)
     		throws NotFoundException, BadRequestException;
+    
+    void removeCallerService(String host, Integer port, Caller caller) throws NotFoundException;
 	
 }

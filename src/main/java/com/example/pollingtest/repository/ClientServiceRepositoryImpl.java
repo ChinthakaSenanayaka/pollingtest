@@ -53,13 +53,8 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		
 	}
 	
-	public CallerConfiguration setupCallerService(String host, Integer port, CallerConfiguration callerConfiguration, boolean append) {
+	public CallerConfiguration setupCallerService(ClientService dbClientService, CallerConfiguration callerConfiguration, boolean append) {
 		
-		Query query = new Query();
-		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
-				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
-		
-		ClientService dbClientService = mongoTemplate.findOne(query, ClientService.class);
 		List<CallerConfiguration> dbCallerConfigs = dbClientService.getCallerConfigs();
 		boolean foundCallerConfig = false;
 		CallerConfiguration returnDbCallerConfig = null;
@@ -127,6 +122,22 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 				}
 			}
 		}
+	}
+
+	@Override
+	public void removeCallerService(ClientService dbClientService, String callerId) {
+		
+		List<CallerConfiguration> dbCallerConfigs = dbClientService.getCallerConfigs();
+		for(int callerConifgCounter = 0; callerConifgCounter < dbClientService.getCallerConfigs().size(); callerConifgCounter++) {
+			
+			CallerConfiguration dbCallerConfig = dbCallerConfigs.get(callerConifgCounter);
+			if(dbCallerConfig.getCallerId().equals(callerId)) {
+				dbCallerConfigs.remove(callerConifgCounter);
+				break;
+			}
+		}
+		mongoTemplate.save(dbClientService);
+		
 	}
 	
 }

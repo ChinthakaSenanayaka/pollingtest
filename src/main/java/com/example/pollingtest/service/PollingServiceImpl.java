@@ -119,7 +119,23 @@ public class PollingServiceImpl implements PollingService {
 		callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
 		callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
 
-		return clientServiceRepository.setupCallerService(host, port, callerConfiguration, append);
+		return clientServiceRepository.setupCallerService(dbClientService, callerConfiguration, append);
+    		
+    }
+    
+    public void removeCallerService(String host, Integer port, Caller caller) throws NotFoundException {
+    		
+    		// validation
+    		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
+		if (dbCaller == null) {
+			throw new NotFoundException("Caller does not exist!");
+		}
+		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
+		if (dbClientService == null) {
+			throw new NotFoundException("Service monitoring is not set up!");
+		}
+		
+		clientServiceRepository.removeCallerService(dbClientService, dbCaller.getId());
     		
     }
 	
