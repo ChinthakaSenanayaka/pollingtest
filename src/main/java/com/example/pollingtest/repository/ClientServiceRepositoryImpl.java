@@ -25,7 +25,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
-	public Outage setupOutage(String host, Integer port, Outage outage) {
+	public Outage setupOutage(final String host, final Integer port, final Outage outage) {
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
@@ -40,7 +40,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		
 	}
 	
-	public void deleteOutage(String host, Integer port) {
+	public void deleteOutage(final String host, final Integer port) {
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
@@ -53,7 +53,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		
 	}
 	
-	public CallerConfiguration setupCallerService(ClientService dbClientService, CallerConfiguration callerConfiguration, boolean append) {
+	public CallerConfiguration setupCallerService(final ClientService dbClientService, final CallerConfiguration callerConfiguration, boolean append) {
 		
 		List<CallerConfiguration> dbCallerConfigs = dbClientService.getCallerConfigs();
 		boolean foundCallerConfig = false;
@@ -94,7 +94,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		
 	}
 	
-	public void deleteClientService(String host, Integer port) throws NotFoundException {
+	public void deleteClientService(final String host, final Integer port) throws NotFoundException {
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
 				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
@@ -104,7 +104,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		}
 	}
 	
-	public void removeCallerRefs(String callerId) {
+	public void removeCallerRefs(final String callerId) {
 		
 		for(ClientService dbClientService : mongoTemplate.findAll(ClientService.class)) {
 			for(CallerConfiguration dbCallerConfig : dbClientService.getCallerConfigs()) {
@@ -125,7 +125,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 	}
 
 	@Override
-	public void removeCallerService(ClientService dbClientService, String callerId) {
+	public void removeCallerService(final ClientService dbClientService, final String callerId) {
 		
 		List<CallerConfiguration> dbCallerConfigs = dbClientService.getCallerConfigs();
 		for(int callerConifgCounter = 0; callerConifgCounter < dbClientService.getCallerConfigs().size(); callerConifgCounter++) {

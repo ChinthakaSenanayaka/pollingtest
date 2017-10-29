@@ -6,7 +6,7 @@ import com.example.pollingtest.exceptions.BadRequestException;
 
 public class Validator {
 	
-	public static void validateOutage(Date startTime, Date endTime) throws BadRequestException {
+	public static void validateOutage(final Date startTime, final Date endTime) throws BadRequestException {
 		if(startTime != null && endTime != null) {
 		if(startTime.after(endTime)) {
 			throw new BadRequestException("Outage start time should be earlier than outage end time!");

@@ -7,16 +7,16 @@ import com.example.pollingtest.model.Outage;
 
 public interface ClientServiceRepositoryCustom {
 	
-	Outage setupOutage(String host, Integer port, Outage outage);
+	Outage setupOutage(final String host, final Integer port, final Outage outage);
 	
-	void deleteOutage(String host, Integer port);
+	void deleteOutage(final String host, final Integer port);
 	
-	CallerConfiguration setupCallerService(ClientService clientService, CallerConfiguration callerConfiguration, boolean append);
+	CallerConfiguration setupCallerService(final ClientService clientService, final CallerConfiguration callerConfiguration, boolean append);
 	
-	void deleteClientService(String host, Integer port) throws NotFoundException;
+	void deleteClientService(final String host, final Integer port) throws NotFoundException;
 	
-	void removeCallerRefs(String callerId);
+	void removeCallerRefs(final String callerId);
 	
-	void removeCallerService(ClientService clientService, String callerId);
+	void removeCallerService(final ClientService clientService, final String callerId);
 	
 }

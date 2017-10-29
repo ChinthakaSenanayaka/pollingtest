@@ -10,21 +10,21 @@ import com.example.pollingtest.model.Outage;
 
 public interface PollingService {
 	
-    ClientService saveClientService(ClientService clientService) throws BadRequestException;
+    ClientService saveClientService(final ClientService clientService) throws BadRequestException;
 
-    void deleteClientService(String host, Integer port) throws NotFoundException;
+    void deleteClientService(final String host, final Integer port) throws NotFoundException;
 
-    Caller saveCaller(Caller caller);
+    Caller saveCaller(final Caller caller);
 
-    void deleteCaller(Caller caller) throws NotFoundException;
+    void deleteCaller(final Caller caller) throws NotFoundException;
 
-    Outage setupOutage(String host, Integer port, Outage outage) throws BadRequestException;
+    Outage setupOutage(final String host, final Integer port, final Outage outage) throws BadRequestException;
 
-    void deleteOutage(String host, Integer port);
+    void deleteOutage(final String host, final Integer port);
     
-    CallerConfiguration setupCallerService(String host, Integer port, CallerConfigDTO callerConfigDTO, boolean append)
+    CallerConfiguration setupCallerService(final String host, final Integer port, final CallerConfigDTO callerConfigDTO, boolean append)
     		throws NotFoundException, BadRequestException;
     
-    void removeCallerService(String host, Integer port, Caller caller) throws NotFoundException;
+    void removeCallerService(final String host, final Integer port, final Caller caller) throws NotFoundException;
 	
 }

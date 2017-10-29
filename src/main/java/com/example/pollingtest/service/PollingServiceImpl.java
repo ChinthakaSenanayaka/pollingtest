@@ -31,7 +31,7 @@ public class PollingServiceImpl implements PollingService {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
-    public ClientService saveClientService(ClientService clientService) throws BadRequestException {
+    public ClientService saveClientService(final ClientService clientService) throws BadRequestException {
     		
     		if(StringUtils.isEmpty(clientService.getServiceName())) {
     			clientService.setServiceName(ClientServiceConstants.CLIENT_SERVICE_NAME);
@@ -55,7 +55,7 @@ public class PollingServiceImpl implements PollingService {
         return clientServiceRepository.save(clientService);
     }
     
-    public void deleteClientService(String host, Integer port) throws NotFoundException {
+    public void deleteClientService(final String host, Integer port) throws NotFoundException {
         clientServiceRepository.deleteClientService(host, port);
     }
     
@@ -63,7 +63,7 @@ public class PollingServiceImpl implements PollingService {
         return callerRepository.save(caller);
     }
     
-    public void deleteCaller(Caller caller) throws NotFoundException {
+    public void deleteCaller(final Caller caller) throws NotFoundException {
     		
     		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
     		if(dbCaller == null) {
@@ -73,7 +73,7 @@ public class PollingServiceImpl implements PollingService {
         callerRepository.delete(dbCaller);
     }
     
-    public Outage setupOutage(String host, Integer port, Outage outage) throws BadRequestException {
+    public Outage setupOutage(final String host, final Integer port, final Outage outage) throws BadRequestException {
     		
     		// validation
     		Validator.validateOutage(outage.getStartTime(), outage.getEndTime());
@@ -81,11 +81,11 @@ public class PollingServiceImpl implements PollingService {
         return clientServiceRepository.setupOutage(host, port, outage);
     }
     
-    public void deleteOutage(String host, Integer port) {
+    public void deleteOutage(final String host, final Integer port) {
     		clientServiceRepository.deleteOutage(host, port);
     }
     
-    public CallerConfiguration setupCallerService(String host, Integer port, CallerConfigDTO callerConfigDTO, boolean append)
+    public CallerConfiguration setupCallerService(final String host, final Integer port, final CallerConfigDTO callerConfigDTO, boolean append)
     		throws NotFoundException, BadRequestException {
     		
     		Caller caller = callerConfigDTO.getCaller();
@@ -123,7 +123,7 @@ public class PollingServiceImpl implements PollingService {
     		
     }
     
-    public void removeCallerService(String host, Integer port, Caller caller) throws NotFoundException {
+    public void removeCallerService(final String host, final Integer port, final Caller caller) throws NotFoundException {
     		
     		// validation
     		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
