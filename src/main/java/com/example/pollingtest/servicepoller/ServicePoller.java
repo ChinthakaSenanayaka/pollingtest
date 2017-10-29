@@ -59,9 +59,8 @@ public class ServicePoller {
 
 						try {
 							servicePollStatus = pollServices(clientService.getHost(), clientService.getPort());
-							if (servicePollStatus) {
-								callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
-							}
+							// get back to starting point of polling
+							callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
 						} catch (IOException e) {
 							servicePollStatus = false;
 						}
@@ -79,17 +78,15 @@ public class ServicePoller {
 
 							try {
 								servicePollStatus = pollServices(clientService.getHost(), clientService.getPort());
-								if (servicePollStatus) {
-									// get back to starting point of polling
-									callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
-									callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
-								} else {
+								if (!servicePollStatus) {
 									for (String notifyEmail : callerConfiguration.getNotifyEmail()) {
 										sendNotificationEmail(notifyEmail, clientService.getHost(), clientService.getPort());
-										LOGGER.info("Email notification is sent to " + notifyEmail + " on "
+										LOGGER.info("Email notification is sent to " + notifyEmail + " about "
 												+ clientService.getHost() + ":" + clientService.getPort());
 									}
 								}
+								// get back to starting point of downtime polling
+								callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
 							} catch (IOException e) {
 								servicePollStatus = false;
 							}
@@ -105,9 +102,9 @@ public class ServicePoller {
 
 				clientServiceRepository.save(clientService);
 
-			} // clientService for loop end
+			} // service outage if check end
 
-		} // service outage if check end
+		} // clientService for loop end
 
 	}
 
