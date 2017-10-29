@@ -103,9 +103,9 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 							andOperator(Criteria.where(ClientServiceConstants.PORT).is(dbClientService.getPort())));
 					
 					Update update = new Update();
-					update.pull(ClientServiceConstants.CALLER_CONFIGS,  new BasicDBObject(ClientServiceConstants.CALLER_CONFIGS_CALLER_ID, callerId));
+					update.pull(ClientServiceConstants.CALLER_CONFIGS,  new BasicDBObject(ClientServiceConstants.CALLER_ID, callerId));
 					
-					mongoTemplate.findAndModify(query, update, ClientService.class);
+					mongoTemplate.updateFirst(query, update, ClientService.class);
 					break;
 				}
 			}

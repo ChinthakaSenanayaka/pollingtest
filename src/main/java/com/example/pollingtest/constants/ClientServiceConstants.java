@@ -8,6 +8,8 @@ public interface ClientServiceConstants {
 	
 	public static final String OUTAGE = "outage";
 	
+	public static final String CALLER_ID = "callerId";
+	
 	public static final String CALLER_CONFIGS = "callerConfigs";
 	
 	public static final String CALLER_CONFIGS_CALLER_ID = "callerConfigs.callerId";
