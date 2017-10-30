@@ -18,7 +18,7 @@ public interface PollingService {
 
     void deleteCaller(final Caller caller) throws NotFoundException;
 
-    Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException;
+    Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException, NotFoundException;
     
     CallerConfiguration setupCallerService(final String host, final Integer port, final CallerConfigDTO callerConfigDTO, boolean append)
     		throws NotFoundException, BadRequestException;

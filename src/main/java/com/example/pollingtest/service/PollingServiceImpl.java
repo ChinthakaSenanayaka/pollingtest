@@ -73,9 +73,13 @@ public class PollingServiceImpl implements PollingService {
         callerRepository.delete(dbCaller);
     }
     
-    public Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException {
+    public Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException, NotFoundException {
     		
     		// validation
+    		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
+		if (dbClientService == null) {
+			throw new NotFoundException("Service monitoring is not set up!");
+		}
     		if(outage != null) {
     			Validator.validateOutage(outage);
     		}
