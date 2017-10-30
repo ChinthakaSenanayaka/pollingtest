@@ -7,9 +7,7 @@ import com.example.pollingtest.model.Outage;
 
 public interface ClientServiceRepositoryCustom {
 	
-	Outage setupOutage(final String host, final Integer port, final Outage outage);
-	
-	void deleteOutage(final String host, final Integer port);
+	Outage maintainOutage(final String host, final Integer port, final Outage outage);
 	
 	CallerConfiguration setupCallerService(final ClientService clientService, final CallerConfiguration callerConfiguration, boolean append);
 	

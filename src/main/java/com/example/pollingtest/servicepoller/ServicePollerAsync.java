@@ -53,11 +53,11 @@ public class ServicePollerAsync {
 
 					try {
 						servicePollStatus = pollServices(clientService.getHost(), clientService.getPort());
-						// get back to starting point of polling
-						callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
 					} catch (IOException e) {
 						servicePollStatus = false;
 					}
+					// get back to starting point of polling
+					callerConfiguration.setNextPoll(callerConfiguration.getPollingFrequency());
 					clientService.setUpStatus(servicePollStatus);
 
 				} else {
@@ -79,11 +79,11 @@ public class ServicePollerAsync {
 											+ clientService.getHost() + ":" + clientService.getPort());
 								}
 							}
-							// get back to starting point of downtime polling
-							callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
 						} catch (IOException e) {
 							servicePollStatus = false;
 						}
+						// get back to starting point of downtime polling
+						callerConfiguration.setGraceTimeExpiration(callerConfiguration.getGraceTime());
 						clientService.setUpStatus(servicePollStatus);
 
 					} else {
@@ -94,6 +94,8 @@ public class ServicePollerAsync {
 
 			}
 
+			/* Applies default write concern and since single mongoDB node even with replica set, this is thread safe still with updates made with HTTP requests
+			   and with threads run by async. */
 			clientServiceRepository.save(clientService);
 
 		} // service outage if check end

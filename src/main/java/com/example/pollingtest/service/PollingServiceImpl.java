@@ -38,7 +38,7 @@ public class PollingServiceImpl implements PollingService {
     		}
     		clientService.setUpStatus(true);
     		if(clientService.getOutage() != null) {
-        		Validator.validateOutage(clientService.getOutage().getStartTime(), clientService.getOutage().getEndTime());
+        		Validator.validateOutage(clientService.getOutage());
     		}
     		
     		if(clientService.getCallerConfigs() == null) {
@@ -73,16 +73,14 @@ public class PollingServiceImpl implements PollingService {
         callerRepository.delete(dbCaller);
     }
     
-    public Outage setupOutage(final String host, final Integer port, final Outage outage) throws BadRequestException {
+    public Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException {
     		
     		// validation
-    		Validator.validateOutage(outage.getStartTime(), outage.getEndTime());
+    		if(outage != null) {
+    			Validator.validateOutage(outage);
+    		}
     		
-        return clientServiceRepository.setupOutage(host, port, outage);
-    }
-    
-    public void deleteOutage(final String host, final Integer port) {
-    		clientServiceRepository.deleteOutage(host, port);
+        return clientServiceRepository.maintainOutage(host, port, outage);
     }
     
     public CallerConfiguration setupCallerService(final String host, final Integer port, final CallerConfigDTO callerConfigDTO, boolean append)

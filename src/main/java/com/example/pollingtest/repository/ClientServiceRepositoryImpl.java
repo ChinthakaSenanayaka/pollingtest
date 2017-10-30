@@ -25,7 +25,7 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
-	public Outage setupOutage(final String host, final Integer port, final Outage outage) {
+	public Outage maintainOutage(final String host, final Integer port, final Outage outage) {
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
@@ -37,19 +37,6 @@ public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCusto
 		ClientService clientService = mongoTemplate.findAndModify(query, update, ClientService.class);
 		
 		return clientService.getOutage();
-		
-	}
-	
-	public void deleteOutage(final String host, final Integer port) {
-		
-		Query query = new Query();
-		query.addCriteria(Criteria.where(ClientServiceConstants.HOST).is(host).
-				andOperator(Criteria.where(ClientServiceConstants.PORT).is(port)));
-		
-		Update update = new Update();
-		update.set(ClientServiceConstants.OUTAGE, null);
-		
-		mongoTemplate.findAndModify(query, update, ClientService.class);
 		
 	}
 	

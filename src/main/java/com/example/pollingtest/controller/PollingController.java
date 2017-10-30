@@ -50,7 +50,7 @@ public class PollingController extends AbstractController {
 	@RequestMapping(value = "/host/{host}/port/{port}/outage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Outage> setupOutage(@PathVariable("host") String host, @PathVariable("port") Integer port, @RequestBody Outage outage) throws BadRequestException {
 		
-		Outage dbOutage = pollingService.setupOutage(host, port, outage);
+		Outage dbOutage = pollingService.maintainOutage(host, port, outage);
 		
 		return new ResponseEntity<Outage>(dbOutage, HttpStatus.CREATED);
 	}
@@ -72,9 +72,9 @@ public class PollingController extends AbstractController {
 	
 	@RequestMapping(value = "/host/{host}/port/{port}/outage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteOutage(@PathVariable("host") String host, @PathVariable("port") Integer port) {
+	public void deleteOutage(@PathVariable("host") String host, @PathVariable("port") Integer port) throws BadRequestException {
 		
-	    pollingService.deleteOutage(host, port);
+	    pollingService.maintainOutage(host, port, null);
 	}
 	
 	@RequestMapping(value = "/host/{host}/port/{port}/callerService", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
