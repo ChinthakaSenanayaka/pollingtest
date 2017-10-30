@@ -29,6 +29,9 @@ public class PollingServiceImpl implements PollingService {
 	@Autowired
     private ClientServiceRepository clientServiceRepository;
 	
+	@Autowired
+    private Validator validator;
+	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
     public ClientService saveClientService(final ClientService clientService) throws BadRequestException {
@@ -65,10 +68,8 @@ public class PollingServiceImpl implements PollingService {
     
     public void deleteCaller(final Caller caller) throws NotFoundException {
     		
-    		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
-    		if(dbCaller == null) {
-    			throw new NotFoundException("Caller with username and password not found!");
-    		}
+    		Caller dbCaller = validator.validateCaller(caller);
+    		
     		clientServiceRepository.removeCallerRefs(dbCaller.getId());
         callerRepository.delete(dbCaller);
     }
@@ -76,10 +77,7 @@ public class PollingServiceImpl implements PollingService {
     public Outage maintainOutage(final String host, final Integer port, final Outage outage) throws BadRequestException, NotFoundException {
     		
     		// validation
-    		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
-		if (dbClientService == null) {
-			throw new NotFoundException("Service monitoring is not set up!");
-		}
+    		validator.validateClientService(host, port);
     		if(outage != null) {
     			Validator.validateOutage(outage);
     		}
@@ -94,14 +92,8 @@ public class PollingServiceImpl implements PollingService {
     		CallerConfiguration callerConfiguration = callerConfigDTO.getCallerConfiguration();
 
 		// validation
-		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
-		if (dbCaller == null) {
-			throw new NotFoundException("Caller does not exist!");
-		}
-		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
-		if (dbClientService == null) {
-			throw new NotFoundException("Service monitoring is not set up!");
-		}
+		Caller dbCaller = validator.validateCaller(caller);
+		ClientService dbClientService = validator.validateClientService(host, port);
 		if (!append) {
 			if (callerConfiguration.getNotifyEmail() == null || callerConfiguration.getNotifyEmail().size() == 0) {
 				throw new BadRequestException("At least single email address should be added.");
@@ -128,14 +120,8 @@ public class PollingServiceImpl implements PollingService {
     public void removeCallerService(final String host, final Integer port, final Caller caller) throws NotFoundException {
     		
     		// validation
-    		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
-		if (dbCaller == null) {
-			throw new NotFoundException("Caller does not exist!");
-		}
-		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
-		if (dbClientService == null) {
-			throw new NotFoundException("Service monitoring is not set up!");
-		}
+    		Caller dbCaller = validator.validateCaller(caller);
+		ClientService dbClientService = validator.validateClientService(host, port);
 		
 		clientServiceRepository.removeCallerService(dbClientService, dbCaller.getId());
     		

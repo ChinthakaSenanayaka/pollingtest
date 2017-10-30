@@ -24,12 +24,15 @@ import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.repository.CallerRepository;
 import com.example.pollingtest.repository.ClientServiceRepository;
+import com.example.pollingtest.util.Validator;
 
 public class PollingServiceTest {
 	
 	private CallerRepository callerRepositoryMock;
 	
     private ClientServiceRepository clientServiceRepositoryMock;
+    
+    private Validator validatorMock;
 	
 	private PollingService pollingService;
 	
@@ -48,8 +51,10 @@ public class PollingServiceTest {
 		pollingService = new PollingServiceImpl();
 		callerRepositoryMock = Mockito.mock(CallerRepository.class);
 		clientServiceRepositoryMock = Mockito.mock(ClientServiceRepository.class);
+		validatorMock = Mockito.mock(Validator.class);
 		ReflectionTestUtils.setField(pollingService, "callerRepository", callerRepositoryMock);
 		ReflectionTestUtils.setField(pollingService, "clientServiceRepository", clientServiceRepositoryMock);
+		ReflectionTestUtils.setField(pollingService, "validator", validatorMock);
 		
 		createClientServiceObject();
 		createCallerObject();
@@ -91,15 +96,15 @@ public class PollingServiceTest {
 	
 	@Test
 	public void testDeleteCaller() throws NotFoundException {
-		Mockito.when(callerRepositoryMock.findByUsernameAndPassword(Mockito.anyString(), Mockito.anyString())).thenReturn(caller);
+		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
 		pollingService.deleteCaller(caller);
 		Mockito.verify(clientServiceRepositoryMock, Mockito.times(1)).removeCallerRefs(Mockito.anyString());
 		Mockito.verify(callerRepositoryMock, Mockito.times(1)).delete(Mockito.any(Caller.class));
 	}
 	
 	@Test
-	public void testDeleteCallerWithNotFoundException() {
-		Mockito.when(callerRepositoryMock.findByUsernameAndPassword(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+	public void testDeleteCallerWithNotFoundException() throws NotFoundException {
+		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenThrow(NotFoundException.class);
 		try {
 			pollingService.deleteCaller(caller);
 		} catch (NotFoundException e) {}
@@ -109,7 +114,7 @@ public class PollingServiceTest {
 	
 	@Test
 	public void testMaintainOutage() throws BadRequestException, NotFoundException {
-		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
 		Mockito.when(clientServiceRepositoryMock.maintainOutage(Mockito.anyString(), Mockito.anyInt(), Mockito.any(Outage.class))).thenReturn(outage);
 		Outage dbOutage = pollingService.maintainOutage("host", 1234, outage);
 		assertNotNull(dbOutage);
@@ -117,7 +122,7 @@ public class PollingServiceTest {
 	
 	@Test(expected = BadRequestException.class)
 	public void testMaintainOutageWithBadRequestException() throws BadRequestException, NotFoundException {
-		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
 		Date startTime = outage.getStartTime();
 		outage.setStartTime(outage.getEndTime());
 		outage.setEndTime(startTime);
@@ -126,15 +131,15 @@ public class PollingServiceTest {
 	
 	@Test(expected = NotFoundException.class)
 	public void testMaintainOutageWithNotFoundException() throws BadRequestException, NotFoundException {
-		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(null);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenThrow(NotFoundException.class);
 		pollingService.maintainOutage("host", 1234, outage);
 	}
 	
 	@Test
 	public void testSetupCallerServiceWithAppendFalse() throws NotFoundException, BadRequestException {
 		Mockito.when(clientServiceRepositoryMock.setupCallerService(Mockito.any(ClientService.class), Mockito.any(CallerConfiguration.class), Mockito.anyBoolean())).thenReturn(callerConfiguration);
-		Mockito.when(callerRepositoryMock.findByUsernameAndPassword(Mockito.anyString(), Mockito.anyString())).thenReturn(caller);
-		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
+		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
 		CallerConfiguration dbCallerConfiguration = pollingService.setupCallerService("host", 1234, callerConfigDTO, false);
 		assertNotNull(dbCallerConfiguration);
 	}
@@ -142,10 +147,18 @@ public class PollingServiceTest {
 	@Test
 	public void testSetupCallerServiceWithAppendTrue() throws NotFoundException, BadRequestException {
 		Mockito.when(clientServiceRepositoryMock.setupCallerService(Mockito.any(ClientService.class), Mockito.any(CallerConfiguration.class), Mockito.anyBoolean())).thenReturn(callerConfiguration);
-		Mockito.when(callerRepositoryMock.findByUsernameAndPassword(Mockito.anyString(), Mockito.anyString())).thenReturn(caller);
-		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
+		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
 		CallerConfiguration dbCallerConfiguration = pollingService.setupCallerService("host", 1234, callerConfigDTO, true);
 		assertNotNull(dbCallerConfiguration);
+	}
+	
+	@Test
+	public void testRemoveCallerService() throws NotFoundException, BadRequestException {
+		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
+		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
+		pollingService.removeCallerService("host", 1234, caller);
+		Mockito.verify(clientServiceRepositoryMock, Mockito.times(1)).removeCallerService(Mockito.any(ClientService.class), Mockito.anyString());
 	}
 	
 	private void createClientServiceObject() {
