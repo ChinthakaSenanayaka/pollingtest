@@ -27,7 +27,7 @@ clientService collection
     "upStatus": true,
     "outage": { // optional, nullable
     		"startTime": ISODate("2017-10-22T06:00:00Z"), // UTC timezone
-    		"endTime": ISODate(2017-10-23T06:00:00Z")
+    		"endTime": ISODate("2017-10-23T06:00:00Z")
 	},
     "callerConfigs": [
         {

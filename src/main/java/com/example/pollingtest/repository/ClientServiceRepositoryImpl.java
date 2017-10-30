@@ -21,7 +21,7 @@ import com.mongodb.WriteResult;
 public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCustom {
 	
 	@Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	

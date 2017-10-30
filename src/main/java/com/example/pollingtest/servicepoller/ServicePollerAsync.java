@@ -29,7 +29,7 @@ public class ServicePollerAsync {
 	private ClientServiceRepository clientServiceRepository;
 	
 	@Autowired
-    public JavaMailSender emailSender;
+    private JavaMailSender emailSender;
 	
 	@Value("${com.example.pollingtest.notification.email.subject}")
 	private String emailSubject;
@@ -79,6 +79,8 @@ public class ServicePollerAsync {
 											+ clientService.getHost() + ":" + clientService.getPort());
 								}
 							}
+						} catch (UnknownHostException e) {
+							servicePollStatus = false;
 						} catch (IOException e) {
 							servicePollStatus = false;
 						}
@@ -101,7 +103,7 @@ public class ServicePollerAsync {
 		} // service outage if check end
 	}
 	
-	private boolean pollServices(final String host, int port) throws IOException {
+	private boolean pollServices(final String host, int port) throws UnknownHostException, IOException {
 
 		Socket socket = null;
 		boolean isConnected = false;
@@ -133,7 +135,7 @@ public class ServicePollerAsync {
 	        message.setTo(toEmailAddress); 
 	        message.setSubject(emailSubject); 
 	        message.setText(String.format(emailText, host, port));
-	        //emailSender.send(message);
+	        emailSender.send(message);
 	        isEmailSent = true;
 			
 		} catch(MailException mailException) {
