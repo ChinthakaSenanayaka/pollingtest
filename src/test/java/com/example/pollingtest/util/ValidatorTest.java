@@ -61,7 +61,7 @@ public class ValidatorTest {
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void testValidateCallerWithNotFoundException() throws NotFoundException {
+	public void testValidateCaller_WithNotFoundException() throws NotFoundException {
 		Mockito.when(callerRepositoryMock.findByUsernameAndPassword(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		validator.validateCaller(caller);
 	}
@@ -74,7 +74,7 @@ public class ValidatorTest {
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void testValidateClientServiceWithNotFoundException() throws NotFoundException {
+	public void testValidateClientService_WithNotFoundException() throws NotFoundException {
 		Mockito.when(clientServiceRepositoryMock.findByHostAndPort(Mockito.anyString(), Mockito.anyInt())).thenReturn(null);
 		validator.validateClientService("host", 1234);
 	}
@@ -85,13 +85,13 @@ public class ValidatorTest {
 	}
 	
 	@Test(expected = BadRequestException.class)
-	public void testValidateOutageWithNoFields() throws BadRequestException {
+	public void testValidateOutage_WithNoFields() throws BadRequestException {
 		outage.setStartTime(null);
 		Validator.validateOutage(outage);
 	}
 	
 	@Test(expected = BadRequestException.class)
-	public void testValidateOutageWithStartAfterEnd() throws BadRequestException {
+	public void testValidateOutage_WithStartAfterEnd() throws BadRequestException {
 		Date endTime = outage.getEndTime();
 		outage.setEndTime(outage.getStartTime());
 		outage.setStartTime(endTime);

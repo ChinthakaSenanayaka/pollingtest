@@ -73,7 +73,7 @@ public class PollingServiceTest {
 	}
 	
 	@Test(expected = BadRequestException.class)
-	public void testSaveClientServiceWithBadRequestException() throws BadRequestException {
+	public void testSaveClientService_WithBadRequestException() throws BadRequestException {
 		Mockito.when(clientServiceRepositoryMock.save(Mockito.any(ClientService.class))).thenReturn(clientService);
 		Date startTime = clientService.getOutage().getStartTime();
 		clientService.getOutage().setStartTime(clientService.getOutage().getEndTime());
@@ -103,7 +103,7 @@ public class PollingServiceTest {
 	}
 	
 	@Test
-	public void testDeleteCallerWithNotFoundException() throws NotFoundException {
+	public void testDeleteCaller_WithNotFoundException() throws NotFoundException {
 		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenThrow(NotFoundException.class);
 		try {
 			pollingService.deleteCaller(caller);
@@ -121,7 +121,7 @@ public class PollingServiceTest {
 	}
 	
 	@Test(expected = BadRequestException.class)
-	public void testMaintainOutageWithBadRequestException() throws BadRequestException, NotFoundException {
+	public void testMaintainOutage_WithBadRequestException() throws BadRequestException, NotFoundException {
 		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
 		Date startTime = outage.getStartTime();
 		outage.setStartTime(outage.getEndTime());
@@ -130,13 +130,13 @@ public class PollingServiceTest {
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void testMaintainOutageWithNotFoundException() throws BadRequestException, NotFoundException {
+	public void testMaintainOutage_WithNotFoundException() throws BadRequestException, NotFoundException {
 		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenThrow(NotFoundException.class);
 		pollingService.maintainOutage("host", 1234, outage);
 	}
 	
 	@Test
-	public void testSetupCallerServiceWithAppendFalse() throws NotFoundException, BadRequestException {
+	public void testSetupCallerService_WithAppendFalse() throws NotFoundException, BadRequestException {
 		Mockito.when(clientServiceRepositoryMock.setupCallerService(Mockito.any(ClientService.class), Mockito.any(CallerConfiguration.class), Mockito.anyBoolean())).thenReturn(callerConfiguration);
 		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
 		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);
@@ -145,7 +145,7 @@ public class PollingServiceTest {
 	}
 	
 	@Test
-	public void testSetupCallerServiceWithAppendTrue() throws NotFoundException, BadRequestException {
+	public void testSetupCallerService_WithAppendTrue() throws NotFoundException, BadRequestException {
 		Mockito.when(clientServiceRepositoryMock.setupCallerService(Mockito.any(ClientService.class), Mockito.any(CallerConfiguration.class), Mockito.anyBoolean())).thenReturn(callerConfiguration);
 		Mockito.when(validatorMock.validateCaller(Mockito.any(Caller.class))).thenReturn(caller);
 		Mockito.when(validatorMock.validateClientService(Mockito.anyString(), Mockito.anyInt())).thenReturn(clientService);

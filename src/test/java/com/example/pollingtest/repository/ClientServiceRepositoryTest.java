@@ -59,7 +59,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test
-	public void testMaintainOutageNull() {
+	public void testMaintainOutage_Null() {
 		clientService.setOutage(null);
 		Mockito.when(mongoTemplateMock.findAndModify(Mockito.any(Query.class), Mockito.any(Update.class), Matchers.<Class<ClientService>>any())).thenReturn(clientService);
 		Outage dbOutage = clientServiceRepository.maintainOutage("host", 1234, null);
@@ -68,7 +68,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test
-	public void testSetupCallerServiceWhileNoDbCallerConfigs() {
+	public void testSetupCallerService_WhileNoDbCallerConfigs() {
 		clientService.setCallerConfigs(new ArrayList<CallerConfiguration>());
 		callerConfiguration.setPollingFrequency(120);
 		callerConfiguration.setNextPoll(100);
@@ -80,7 +80,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test
-	public void testSetupCallerServiceWithAppendTrueWhileDbCallerConfigsExist() {
+	public void testSetupCallerService_WithAppendTrueWhileDbCallerConfigsExist() {
 		callerConfiguration.setPollingFrequency(120);
 		CallerConfiguration dbCallerConfiguration = clientServiceRepository.setupCallerService(clientService, callerConfiguration, true);
 		assertNotNull(dbCallerConfiguration);
@@ -90,7 +90,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test
-	public void testSetupCallerServiceWithAppendFalseWhileDbCallerConfigsExist() {
+	public void testSetupCallerService_WithAppendFalseWhileDbCallerConfigsExist() {
 		callerConfiguration.setPollingFrequency(120);
 		callerConfiguration.setNextPoll(100);
 		CallerConfiguration dbCallerConfiguration = clientServiceRepository.setupCallerService(clientService, callerConfiguration, false);
@@ -110,7 +110,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void testDeleteClientServiceWithNoDBRecord() throws NotFoundException {
+	public void testDeleteClientService_WithNoDBRecord() throws NotFoundException {
 		WriteResult writeResultMock = Mockito.mock(WriteResult.class);
 		Mockito.when(writeResultMock.getN()).thenReturn(0);
 		Mockito.when(mongoTemplateMock.remove(Mockito.any(Query.class), Matchers.<Class<ClientService>>any())).thenReturn(writeResultMock);
@@ -127,7 +127,7 @@ public class ClientServiceRepositoryTest {
 	}
 	
 	@Test
-	public void testRemoveCallerRefsWithNoCallers() {
+	public void testRemoveCallerRefs_WithNoCallers() {
 		clientService.setCallerConfigs(new ArrayList<CallerConfiguration>());
 		Mockito.when(mongoTemplateMock.findAll(Matchers.<Class<ClientService>>any())).thenReturn(clientServiceList);
 		clientServiceRepository.removeCallerRefs("1234");

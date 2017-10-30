@@ -46,7 +46,7 @@ public class ServicePollerAsyncTest {
     }
     
     @Test
-	public void testPollSingleServiceWithUpStatusTrue() {
+	public void testPollSingleService_WithUpStatusTrue() {
     		Date now = new Date();
     		callerConfiguration.setNextPoll(1);
     		callerConfiguration.setGraceTimeExpiration(1);
@@ -57,7 +57,7 @@ public class ServicePollerAsyncTest {
     }
     
     @Test
-	public void testPollSingleServiceWithUpStatusFalse() {
+	public void testPollSingleService_WithUpStatusFalse() {
     		Date now = new Date();
     		clientService.setUpStatus(false);
     		callerConfiguration.setGraceTimeExpiration(1);
