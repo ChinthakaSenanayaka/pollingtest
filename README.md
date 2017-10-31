@@ -92,7 +92,7 @@ run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
 
 TODO:
-1. Unit testing
+1. Unit testing (controller exception handling)
 2. Code comments: class level, method level and interfaces
 3. Fix readme file with contracts
 
@@ -100,3 +100,5 @@ Assumptions:
 1. Developing a UI is not in the requirements, thus only fully functional API is developed.
 2. No security aspects of this application are addressed.
 3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns (such as perf concerns) within given deadline.
+4. As said in requirements, a planned outage can be configured on a service.
+5. If service is down, clients will be updated repeatedly for each end of a grace time period.
