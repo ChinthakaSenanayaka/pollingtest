@@ -14,6 +14,13 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
 import com.mongodb.MongoTimeoutException;
 
+/**
+ * MongoDB database configuration class.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 @Configuration
 @ComponentScan
 public class MongoConfigurations extends AbstractMongoConfiguration {
