@@ -11,6 +11,13 @@ import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.repository.CallerRepository;
 import com.example.pollingtest.repository.ClientServiceRepository;
 
+/**
+ * Class for business logic validations
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 @Component
 public class Validator {
 	
@@ -20,6 +27,13 @@ public class Validator {
 	@Autowired
     private ClientServiceRepository clientServiceRepository;
 	
+	/**
+	 * Validate whether user is a registered user in the system
+	 * 
+	 * @param caller the user details
+	 * @return registered user record
+	 * @throws NotFoundException when user record in the system is not found
+	 */
 	public Caller validateCaller(Caller caller) throws NotFoundException {
 		Caller dbCaller = callerRepository.findByUsernameAndPassword(caller.getUsername(), caller.getPassword());
 		if(dbCaller == null) {
@@ -29,6 +43,14 @@ public class Validator {
 		return dbCaller;
 	}
 	
+	/**
+	 * Validate whether monitored service is registered with the system,
+	 * 
+	 * @param host the host field
+	 * @param port the port field
+	 * @return monitored service record in the system
+	 * @throws NotFoundException when monitored service record is not found
+	 */
 	public ClientService validateClientService(String host, Integer port) throws NotFoundException {
 		ClientService dbClientService = clientServiceRepository.findByHostAndPort(host, port);
 		if (dbClientService == null) {
@@ -38,6 +60,12 @@ public class Validator {
 		return dbClientService;
 	}
 	
+	/**
+	 * Validate whether outage configuration input is correct
+	 * 
+	 * @param outage the outage details
+	 * @throws BadRequestException when the outage configuration input is wrong
+	 */
 	public static void validateOutage(final Outage outage) throws BadRequestException {
 
 		if (outage.getStartTime() != null && outage.getEndTime() != null) {

@@ -32,22 +32,37 @@ public class Outage {
 	}
 
 	/**
+	 * Getter for outage start time
 	 * 
-	 * 
-	 * @return
+	 * @return outage start time
 	 */
     public Date getStartTime() {
 		return startTime;
 	}
 
+    /**
+     * Setter for outage start time
+     * 
+     * @param startTime outage start time
+     */
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
+	/**
+	 * Getter for outage end time
+	 * 
+	 * @return outage end time
+	 */
 	public Date getEndTime() {
 		return endTime;
 	}
 
+	/**
+	 * Setter for outage end time
+	 * 
+	 * @param endTime outage end time
+	 */
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}

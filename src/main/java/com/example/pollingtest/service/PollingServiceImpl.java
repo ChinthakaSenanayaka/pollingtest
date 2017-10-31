@@ -20,6 +20,13 @@ import com.example.pollingtest.repository.CallerRepository;
 import com.example.pollingtest.repository.ClientServiceRepository;
 import com.example.pollingtest.util.Validator;
 
+/**
+ * Service class for polling the monitored service and inform its listening users.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 @Service
 public class PollingServiceImpl implements PollingService {
 	

@@ -22,6 +22,13 @@ import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.repository.ClientServiceRepository;
 
+/**
+ * Class to handle polling monitored service process asynchronously
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 @Component
 public class ServicePollerAsync {
 	
@@ -39,6 +46,12 @@ public class ServicePollerAsync {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * Method to process monitored service one-by-one asynchronously and when monitored service is down, notify it to the users via email
+	 * 
+	 * @param clientService the monitored service details
+	 * @param now async process started time for all the monitored services
+	 */
 	@Async("processExecutor")
 	public void pollSingleService(final ClientService clientService, final Date now) {
 		if (clientService.getOutage() == null || !(now.after(clientService.getOutage().getStartTime())

@@ -18,6 +18,13 @@ import com.example.pollingtest.model.Outage;
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 
+/**
+ * Service monitoring entry repository class (DAO) for custom CURD operations
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 public class ClientServiceRepositoryImpl implements ClientServiceRepositoryCustom {
 	
 	@Autowired
