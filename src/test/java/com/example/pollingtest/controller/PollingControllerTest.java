@@ -25,11 +25,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.pollingtest.dto.CallerConfigDTO;
+import com.example.pollingtest.exceptions.BadRequestException;
+import com.example.pollingtest.exceptions.NotFoundException;
 import com.example.pollingtest.model.Caller;
 import com.example.pollingtest.model.CallerConfiguration;
 import com.example.pollingtest.model.ClientService;
 import com.example.pollingtest.model.Outage;
 import com.example.pollingtest.service.PollingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PollingControllerTest {
@@ -66,7 +69,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSaveService() throws Exception {
+    public void testSaveService() throws JsonProcessingException, BadRequestException, Exception {
     		Mockito.when(pollingServiceMock.saveClientService(Mockito.any(ClientService.class))).thenReturn(clientService);
  
         mockMvc.perform(post("/service").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(clientService)))
@@ -77,7 +80,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSaveCaller() throws Exception {
+    public void testSaveCaller() throws JsonProcessingException, Exception {
     		Mockito.when(pollingServiceMock.saveCaller(Mockito.any(Caller.class))).thenReturn(caller);
  
         mockMvc.perform(post("/caller").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
@@ -88,7 +91,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSetupOutage() throws Exception {
+    public void testSetupOutage() throws JsonProcessingException, BadRequestException, NotFoundException, Exception {
     		Mockito.when(pollingServiceMock.maintainOutage(Mockito.anyString(), Mockito.anyInt(), Mockito.any(Outage.class))).thenReturn(outage);
  
         mockMvc.perform(post("/host/{host}/port/{port}/outage", "host", 8888, objectMapper.writeValueAsBytes(outage))
@@ -108,7 +111,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testDeleteCaller() throws Exception {
+    public void testDeleteCaller() throws JsonProcessingException, Exception {
         mockMvc.perform(delete("/caller")
         			.contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
                 .andExpect(status().isNoContent());
@@ -124,7 +127,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSetupCallerService_appendFalse() throws Exception {
+    public void testSetupCallerService_appendFalse() throws JsonProcessingException, NotFoundException, BadRequestException, Exception {
         Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
           .thenReturn(callerConfiguration);
         
@@ -139,7 +142,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSetupCallerService_appendTrue() throws Exception {
+    public void testSetupCallerService_appendTrue() throws JsonProcessingException, NotFoundException, BadRequestException, Exception {
         Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
           .thenReturn(callerConfiguration);
         
@@ -154,7 +157,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSetupCallerService_noAppend() throws Exception {
+    public void testSetupCallerService_noAppend() throws JsonProcessingException, NotFoundException, BadRequestException, Exception {
         Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
           .thenReturn(callerConfiguration);
         
@@ -169,7 +172,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testSetupCallerService_appendInvalid() throws Exception {
+    public void testSetupCallerService_appendInvalid() throws JsonProcessingException, NotFoundException, BadRequestException, Exception {
         Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
           .thenReturn(callerConfiguration);
         
@@ -184,7 +187,7 @@ public class PollingControllerTest {
     }
     
     @Test
-    public void testRemoveCallerService() throws Exception {
+    public void testRemoveCallerService() throws JsonProcessingException, Exception {
         mockMvc.perform(delete("/host/{host}/port/{port}/callerService", "host", 8888)
                     .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
                 .andExpect(status().isNoContent());

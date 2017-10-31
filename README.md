@@ -92,9 +92,8 @@ run:
 java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
 
 TODO:
-1. Unit testing (controller exception handling)
-2. Code comments: class level, method level and interfaces
-3. Fix readme file with contracts
+1. Code comments: class level, method level and interfaces
+2. Fix readme file with contracts
 
 Assumptions:
 1. Developing a UI is not in the requirements, thus only fully functional API is developed.

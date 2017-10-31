@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 
 /**
  * The Interface ExceptionAttributes.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ * 
  */
 public interface ExceptionAttributes {
 

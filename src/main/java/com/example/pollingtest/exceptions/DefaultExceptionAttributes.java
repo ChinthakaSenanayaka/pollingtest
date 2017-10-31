@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 
 /**
  * The Class DefaultExceptionAttributes.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ * 
  */
 public class DefaultExceptionAttributes implements ExceptionAttributes {
 

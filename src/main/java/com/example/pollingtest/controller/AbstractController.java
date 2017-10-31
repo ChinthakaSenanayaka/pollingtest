@@ -16,6 +16,16 @@ import com.example.pollingtest.exceptions.BadRequestException;
 import com.example.pollingtest.exceptions.DefaultExceptionAttributes;
 import com.example.pollingtest.exceptions.ExceptionAttributes;
 
+
+/**
+ * Exception handling class.
+ * @ControllerAdvice is not used due to some exceptions cannot be catched with @ExceptionHandler
+ * because Spring wraps exceptions (E.g. NullPointerException) with its exceptions.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 public abstract class AbstractController {
 	
   private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());

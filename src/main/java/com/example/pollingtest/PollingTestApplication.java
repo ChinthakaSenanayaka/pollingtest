@@ -8,6 +8,14 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+
+/**
+ * Polling test application starting class.
+ * 
+ * @author Chinthaka Senanayaka
+ * @since 31-Oct-2017
+ *
+ */
 @SpringBootApplication
 @EnableAsync
 public class PollingTestApplication {
@@ -25,6 +33,11 @@ public class PollingTestApplication {
 		SpringApplication.run(PollingTestApplication.class, args);
 	}
 	
+	/**
+	 * Thread pool for asynchronous service polling.
+	 * 
+	 * @return TaskExecutor thread pool objects.
+	 */
 	@Bean(name="processExecutor")
     public TaskExecutor workExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
