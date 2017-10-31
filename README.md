@@ -100,3 +100,152 @@ Database table structure used:
 }
 
 Application Restful HTTP request and response formats:
+1. saveService:
+	Request: POST http://localhost:8080/service Headers: Content-Type: application/json
+	Body: {
+	   "serviceName":"localServiceTest",
+	   "host":"localhost",
+	   "port":8890,
+	   "upStatus":true,
+	   "outage":{
+	      "startTime": "2017-10-22T06:00:00Z",
+	      "endTime": "2017-10-23T06:00:00Z"
+	   },
+	   "callerConfigs":[
+	      {
+	         "callerId":"59ecea6a80d63052a7491a81",
+	         "pollingFrequency":5,
+	         "nextPoll":3,
+	         "notifyEmail":[
+	            "testemail@gmail.com"
+	         ],
+	         "graceTime":2,
+	         "graceTimeExpiration":1
+	      },
+	      {
+	         "callerId":"59ecea6b80d63052a7491a82",
+	         "pollingFrequency":3,
+	         "nextPoll":2,
+	         "notifyEmail":[
+	            "testemail@gmail.com"
+	         ],
+	         "graceTime":2,
+	         "graceTimeExpiration":1
+	      }
+	   ]
+	}
+	Response: Status: 201 CREATED Headers: Content-Type: application/json
+	Body: {
+	   "id":"59f8d41f29da9b032fcf93cd",
+	   "serviceName":"localServiceTest",
+	   "host":"localhost",
+	   "port":8890,
+	   "upStatus":true,
+	   "outage":{
+	      "startTime":1508652000000,
+	      "endTime":1508738400000
+	   },
+	   "callerConfigs":[
+	      {
+	         "callerId":"59ecea6a80d63052a7491a81",
+	         "pollingFrequency":5,
+	         "nextPoll":5,
+	         "notifyEmail":[
+	            "testemail@gmail.com"
+	         ],
+	         "graceTime":2,
+	         "graceTimeExpiration":2
+	      },
+	      {
+	         "callerId":"59ecea6b80d63052a7491a82",
+	         "pollingFrequency":3,
+	         "nextPoll":3,
+	         "notifyEmail":[
+	            "testemail@gmail.com"
+	         ],
+	         "graceTime":2,
+	         "graceTimeExpiration":2
+	      }
+	   ]
+	}
+	
+2. saveCaller:
+	Request: POST http://localhost:8080/caller Headers: Content-Type: application/json
+	Body: {
+		"username" : "user3",
+		"password" : "1234",
+		"callerName" : "firstName3 lastName3"
+	}
+	Response: Status: 201 CREATED Headers: Content-Type: application/json
+	Body: {
+	   "id":"59f8d4b929da9b032fcf93ce",
+	   "username":"user3",
+	   "password":"1234",
+	   "callerName":"firstName3 lastName3"
+	}
+	
+3. setupOutage:
+	Request: POST http://localhost:8080/host/localhost/port/8890/outage Headers: Content-Type: application/json
+	Body: {
+			"startTime" : "2017-10-27T06:00:00Z",
+			"endTime" : "2017-10-28T06:00:00Z"
+	}
+	Response: Status: 201 CREATED Headers: Content-Type: application/json
+	Body: {
+	   "startTime":1508652000000,
+	   "endTime":1508738400000
+	}
+	
+4. deleteService:
+	Request: DELETE http://localhost:8080/host/localhost/port/8890/service Headers: Content-Type: application/json
+	Body: NO
+	Response: Status: 204 NO_CONTENT Headers: NO
+	Body: NO
+	
+5. deleteCaller:
+	Request: DELETE http://localhost:8080/caller Headers: Content-Type: application/json
+	Body:
+	{
+		"username" : "user3",
+		"password" : "1234"
+	}
+	Response: Status: 204 NO_CONTENT Headers: NO
+	Body: NO
+	
+6. deleteOutage:
+	Request: DELETE http://localhost:8080/host/localhost/port/8890/outage Headers: Content-Type: application/json
+	Body: NO
+	Response: Status: 204 NO_CONTENT Headers: NO
+	Body: NO
+	
+7. setupCallerService:
+	Request: POST http://localhost:8080/host/localhost/port/8890/callerService?append=true Headers: Content-Type: application/json
+	Body: {
+	    "caller": {
+	        "username" : "user2",
+			"password" : "1234"
+	    },
+	    "callerConfiguration": {
+			"notifyEmail" : ["testemail@gmail.com"]
+	    }
+	}
+	Response: Status: 201 CREATED Headers: Content-Type: application/json
+	Body: {
+	   "callerId":"59ecea6b80d63052a7491a82",
+	   "pollingFrequency":3,
+	   "nextPoll":3,
+	   "notifyEmail":[
+	      "testemail@gmail.com"
+	   ],
+	   "graceTime":2,
+	   "graceTimeExpiration":1
+	}
+	
+8. removeCallerService:
+	Request: DELETE http://localhost:8080/host/localhost/port/8890/callerService Headers: Content-Type: application/json
+	Body: {
+        "username" : "user2",
+		"password" : "1234"
+	}
+	Response: Status: 204 NO_CONTENT Headers: NO
+	Body: NO
