@@ -19,7 +19,43 @@ The code should include a set of unit tests, and you are advised to think about 
 
 Candidates are provided seven(7) days to complete this test assignment, and should be delivered via GitHub.
 
-clientService collection
+Assumptions:
+1. Developing a UI is not in the requirements, thus only fully functional API is developed.
+2. No security aspects of this application are addressed.
+3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns (such as perf concerns) within given deadline.
+4. As said in requirements, a planned outage can be configured on a service.
+5. If service is down, clients will be updated repeatedly for each end of a grace time period.
+
+Pre-requisites:
+1. Install Java: JDK-1.8_144
+2. Install MongoDB 3.4
+3. Install Maven 3.0.3
+4. Install Git 1.7.12.4
+5. Start mongo server by using command: mongod --dbpath=<database data folder> --auth
+6. Change application.properties configurations on src/main/resources folder
+    a. Set db_username, db_password and db_host
+    b. Set email address and password of it
+    c. Change logging file path
+    d. Set log4j file path. Log4j.properties file is in projects folder/src/main/resources folder
+7. Connect to the mongo db by this command: mongo 127.0.0.1:27017/monitoring_db
+    a. Insert pre-required DB records
+       db.caller.createIndex( { username: 1, password: 1 }, { unique: true } );
+       db.clientService.createIndex( { host: 1, port: 1 }, { unique: true } );
+       db.clientService.createIndex( { host: 1, port: 1, 'callerConfigs.callerId': 1 }, { unique: true } );
+       
+       db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
+       db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
+       
+       db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a83"),"serviceName":"localServiceTest","host":"localhost","port":8888,"upStatus":true,"outage": {"startTime": ISODate("2017-10-22T06:00:00Z"),"endTime": ISODate("2017-10-23T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
+       
+       db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName":"localServiceTest","host":"localhost","port":8889,"upStatus":true,"outage": {"startTime": ISODate("2017-10-27T06:00:00Z"),"endTime": ISODate("2017-10-28T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
+       
+8. Checkout the tag released code
+9. Build the project after going in to the project location and by Maven command: mvn clean install
+10. Run the project after going in to the project location/target folder and by command: java -jar pollingtest-1.0.0.0-SNAPSHOT.jar
+
+Database table structure used:
+1. clientService collection
 {
     "serviceName": "localServiceTest",
     "host": "localhost", // composite primary key
@@ -49,7 +85,7 @@ clientService collection
     ]
 }
 
-caller collection
+2. caller collection
 {
 	"_id" : 1,
 	"username" : "user1",
@@ -63,40 +99,4 @@ caller collection
 	"callerName" : "firstName2 lastName2"
 }
 
-Java: JDK-1.8_144
-MongoDB 3.4
-Maven 3.0.3
-No security concerns are addressed such as db user/pass, app authentication and authorization
-mongod --dbpath=/Users/tikka/Installs/mongodb-osx-x86_64-3.4.9/data/db --auth
-change application.properties configs
-
-db commands:
-
-mongo 127.0.0.1:27017/monitoring_db
-
-db.caller.createIndex( { username: 1, password: 1 }, { unique: true } );
-db.clientService.createIndex( { host: 1, port: 1 }, { unique: true } );
-db.clientService.createIndex( { host: 1, port: 1, 'callerConfigs.callerId': 1 }, { unique: true } );
-
-db.caller.insert({"_id" : ObjectId("59ecea6a80d63052a7491a81"),"username" : "user1","password" : "1234","callerName" : "firstName1 lastName1"});
-db.caller.insert({"_id" : ObjectId("59ecea6b80d63052a7491a82"),"username" : "user2","password" : "1234","callerName" : "firstName2 lastName2"});
-
-db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a83"),"serviceName":"localServiceTest","host":"localhost","port":8888,"upStatus":true,"outage": {"startTime": ISODate("2017-10-22T06:00:00Z"),"endTime": ISODate("2017-10-23T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
-
-db.clientService.insert({"_id":ObjectId("59eceb7080d63052a7491a84"),"serviceName":"localServiceTest","host":"localhost","port":8889,"upStatus":true,"outage": {"startTime": ISODate("2017-10-27T06:00:00Z"),"endTime": ISODate("2017-10-28T06:00:00Z")},"callerConfigs":[{"callerId":"59ecea6a80d63052a7491a81","pollingFrequency":5,"nextPoll":3,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1},{"callerId":"59ecea6b80d63052a7491a82","pollingFrequency":3,"nextPoll":2,"notifyEmail":["senanayakachinthaka@gmail.com"],"graceTime":2,"graceTimeExpiration":1}]});
-
-build:
-mvn clean install
-
-run:
-java -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -jar pollingtest-1.0.0.0-SNAPSHOT.jar
-
-TODO:
-1. Fix readme file with contracts
-
-Assumptions:
-1. Developing a UI is not in the requirements, thus only fully functional API is developed.
-2. No security aspects of this application are addressed.
-3. Only up to desired level of design patterns and performance concerns addressed because this is only a recruitment assignment and cannot address all of the concerns (such as perf concerns) within given deadline.
-4. As said in requirements, a planned outage can be configured on a service.
-5. If service is down, clients will be updated repeatedly for each end of a grace time period.
+Application Restful HTTP request and response formats:
