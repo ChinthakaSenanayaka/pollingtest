@@ -1,6 +1,7 @@
 package com.example.pollingtest.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PollingControllerTest {
 	
 	@Mock
-	private PollingService pollingService;
+	private PollingService pollingServiceMock;
 	
 	@InjectMocks
     private PollingController pollingController;
@@ -66,12 +67,60 @@ public class PollingControllerTest {
     
     @Test
     public void testSaveService() throws Exception {
-    		Mockito.when(pollingService.saveClientService(Mockito.any(ClientService.class))).thenReturn(clientService);
+    		Mockito.when(pollingServiceMock.saveClientService(Mockito.any(ClientService.class))).thenReturn(clientService);
  
         mockMvc.perform(post("/service").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(clientService)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.host", is("host")));
+                .andExpect(jsonPath("$.host", is("host")))
+                .andExpect(jsonPath("$.port", is(8888)));
+    }
+    
+    @Test
+    public void testSaveCaller() throws Exception {
+    		Mockito.when(pollingServiceMock.saveCaller(Mockito.any(Caller.class))).thenReturn(caller);
+ 
+        mockMvc.perform(post("/caller").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.username", is("username")))
+                .andExpect(jsonPath("$.password", is("password")));
+    }
+    
+    @Test
+    public void testSetupOutage() throws Exception {
+    		Mockito.when(pollingServiceMock.maintainOutage(Mockito.anyString(), Mockito.anyInt(), Mockito.any(Outage.class))).thenReturn(outage);
+ 
+        mockMvc.perform(post("/host/{host}/port/{port}/outage", "host", 8888, objectMapper.writeValueAsBytes(outage))
+        			.contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(outage)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.startTime", is(not(empty()))))
+                .andExpect(jsonPath("$.endTime", is(not(empty()))));
+    }
+    
+    @Test
+    public void testDeleteService() throws Exception {
+        mockMvc.perform(delete("/host/{host}/port/{port}/service", "host", 8888)
+        			.contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNoContent());
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).deleteClientService(Mockito.anyString(), Mockito.anyInt());
+    }
+    
+    @Test
+    public void testDeleteCaller() throws Exception {
+        mockMvc.perform(delete("/caller")
+        			.contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
+                .andExpect(status().isNoContent());
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).deleteCaller(Mockito.any(Caller.class));
+    }
+    
+    @Test
+    public void testDeleteOutage() throws Exception {
+        mockMvc.perform(delete("/host/{host}/port/{port}/outage", "host", 8888)
+        			.contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNoContent());
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).maintainOutage(Mockito.anyString(), Mockito.anyInt(), Mockito.isNull(Outage.class));
     }
     
     private void createClientServiceObject() {

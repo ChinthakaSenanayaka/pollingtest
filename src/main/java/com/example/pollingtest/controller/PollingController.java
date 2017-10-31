@@ -55,7 +55,7 @@ public class PollingController extends AbstractController {
 		return new ResponseEntity<Outage>(dbOutage, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value = "/host/{host}/port/{port}/service", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/service", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteService(@PathVariable("host") String host, @PathVariable("port") Integer port) throws NotFoundException {
 		
@@ -63,14 +63,14 @@ public class PollingController extends AbstractController {
 	}
 	
 	// username and password in the body should be encrypted
-	@RequestMapping(value = "/caller", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/caller", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCaller(@RequestBody Caller caller) throws NotFoundException {
 		
 	    pollingService.deleteCaller(caller);
 	}
 	
-	@RequestMapping(value = "/host/{host}/port/{port}/outage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/outage", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteOutage(@PathVariable("host") String host, @PathVariable("port") Integer port) throws BadRequestException, NotFoundException {
 		
@@ -87,7 +87,7 @@ public class PollingController extends AbstractController {
 		return new ResponseEntity<CallerConfiguration>(dbCallerConfiguration, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value = "/host/{host}/port/{port}/callerService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/host/{host}/port/{port}/callerService", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeCallerService(@PathVariable("host") String host, @PathVariable("port") Integer port, @RequestBody Caller caller) throws NotFoundException {
 		
