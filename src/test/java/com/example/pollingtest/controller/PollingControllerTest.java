@@ -123,6 +123,75 @@ public class PollingControllerTest {
         Mockito.verify(pollingServiceMock, Mockito.times(1)).maintainOutage(Mockito.anyString(), Mockito.anyInt(), Mockito.isNull(Outage.class));
     }
     
+    @Test
+    public void testSetupCallerService_appendFalse() throws Exception {
+        Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
+          .thenReturn(callerConfiguration);
+        
+        mockMvc.perform(post("/host/{host}/port/{port}/callerService?append=false", "host", 8888)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(callerConfigDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.callerId", is("1234")))
+                .andExpect(jsonPath("$.pollingFrequency", is(50)));
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).setupCallerService(
+            Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean());
+    }
+    
+    @Test
+    public void testSetupCallerService_appendTrue() throws Exception {
+        Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
+          .thenReturn(callerConfiguration);
+        
+        mockMvc.perform(post("/host/{host}/port/{port}/callerService?append=true", "host", 8888)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(callerConfigDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.callerId", is("1234")))
+                .andExpect(jsonPath("$.pollingFrequency", is(50)));
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).setupCallerService(
+            Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean());
+    }
+    
+    @Test
+    public void testSetupCallerService_noAppend() throws Exception {
+        Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
+          .thenReturn(callerConfiguration);
+        
+        mockMvc.perform(post("/host/{host}/port/{port}/callerService", "host", 8888)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(callerConfigDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.callerId", is("1234")))
+                .andExpect(jsonPath("$.pollingFrequency", is(50)));
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).setupCallerService(
+            Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean());
+    }
+    
+    @Test
+    public void testSetupCallerService_appendInvalid() throws Exception {
+        Mockito.when(pollingServiceMock.setupCallerService(Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean()))
+          .thenReturn(callerConfiguration);
+        
+        mockMvc.perform(post("/host/{host}/port/{port}/callerService?append=123", "host", 8888)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(callerConfigDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.callerId", is("1234")))
+                .andExpect(jsonPath("$.pollingFrequency", is(50)));
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).setupCallerService(
+            Mockito.anyString(), Mockito.anyInt(), Mockito.any(CallerConfigDTO.class), Mockito.anyBoolean());
+    }
+    
+    @Test
+    public void testRemoveCallerService() throws Exception {
+        mockMvc.perform(delete("/host/{host}/port/{port}/callerService", "host", 8888)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsBytes(caller)))
+                .andExpect(status().isNoContent());
+        Mockito.verify(pollingServiceMock, Mockito.times(1)).removeCallerService(
+            Mockito.anyString(), Mockito.anyInt(), Mockito.any(Caller.class));
+    }
+    
     private void createClientServiceObject() {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("433")); // 433 Z ZULU = UTC time zone
 		calendar.set(2000, Calendar.JANUARY, 30);
